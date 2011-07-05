@@ -1,0 +1,3 @@
+{% for object_tool in object_tools %}
+    <li><a href="{{ object_tool.reverse }}" title="{{ object_tool.help_text }}"class="historylink">{{ object_tool.label }}</a></li>
+{% endfor %}
