@@ -1,0 +1,21 @@
+{% extends "admin/base_site.html" %}
+{% load i18n adminmedia %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />{% endblock %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+    <a href="{% url admin:index %}">{% trans "Home" %}</a> &rsaquo;
+     <a href="{% url admin:app_list app_label %}">{{ app_label|capfirst|escape }}</a> &rsaquo;
+     <a href="{{changelist_url }}">{{ opts.verbose_name_plural|capfirst }}</a> &rsaquo;
+     {% trans tool.label %}
+</div>
+{% endif %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <div class="submit-row">
+        <input type="submit" value="{% trans tool.label %}" class="default" name="_{{ tool.name }}" />
+    </div>
+</div>
+{% endblock %}
