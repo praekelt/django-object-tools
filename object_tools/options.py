@@ -1,10 +1,21 @@
+from django import forms
+from django.conf import settings
+from django.conf.urls.defaults import patterns, url
 from django.core.urlresolvers import reverse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
+
+csrf_protect_m = method_decorator(csrf_protect)
 
 class ObjectTool():
     def __init__(self, model):
         self.model = model
 
+    @csrf_protect_m
     def _view(self, request, extra_context=None):
+        """
+        View wrapper collecting various extra context for painless form rendering.
+        """
         try:
             self.view
         except AttributeError:
@@ -13,18 +24,49 @@ class ObjectTool():
         opts = self.model._meta
         app_label = opts.app_label
         object_name = opts.object_name.lower()
+        form = self.construct_form(request)
+        media = self.media(form)
         extra_context = {
             'user': request.user,
             'title': 'Export %s' % opts.verbose_name_plural.lower(),
             'tool': self,
             'opts': opts,
             'app_label': app_label,
+            'media': media,
+            'form': self.construct_form(request),
             'changelist_url': reverse('admin:%s_%s_changelist' % (app_label, object_name))
         }
         return self.view(request, extra_context)
+
+    def construct_form(self, request):
+        """
+        Constructs form from POST method using self.form_class.
+        """
+        if request.method == 'POST':
+            form = self.form_class(self.model, request.POST)
+        else:
+            form = self.form_class(self.model)
+        return form
     
-    def get_urls(self):
-        from django.conf.urls.defaults import patterns, url
+    def media(self, form):
+        """
+        Collects admin and form media.
+        """
+
+        js = ['js/core.js', 'js/admin/RelatedObjectLookups.js',
+              'js/jquery.min.js', 'js/jquery.init.js']
+
+        media = forms.Media(js=['%s%s' % (settings.ADMIN_MEDIA_PREFIX, url) for url in js])
+        
+        for name, field in form.fields.iteritems():
+            media = media + field.widget.media
+
+        return media
+
+    def _urls(self):
+        """
+        URL patterns for tool linked to _view method.
+        """
 
         info = self.model._meta.app_label, self.model._meta.module_name, self.name
 
@@ -34,10 +76,7 @@ class ObjectTool():
                 name='%s_%s_%s' % info),
         )
         return urlpatterns
-
-    def urls(self):
-        return self.get_urls()
-    urls = property(urls)
+    urls = property(_urls)
     
     def reverse(self):
         info = self.model._meta.app_label, self.model._meta.module_name, self.name

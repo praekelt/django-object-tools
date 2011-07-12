@@ -1,7 +1,12 @@
 {% extends "admin/base_site.html" %}
-{% load i18n adminmedia %}
+{% load i18n admin_modify adminmedia %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />{% endblock %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url admin:jsi18n %}"></script>
+{{ media }}
+{% endblock %}
 
 {% block breadcrumbs %}{% if not is_popup %}
 <div class="breadcrumbs">
@@ -13,9 +18,8 @@
 {% endif %}{% endblock %}
 
 {% block content %}
-<div id="content-main">
-    <div class="submit-row">
-        <input type="submit" value="{% trans tool.label %}" class="default" name="_{{ tool.name }}" />
+    <div id="content-main">
+        {% block tool_form %}
+        {% endblock %}
     </div>
-</div>
 {% endblock %}
