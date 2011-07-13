@@ -3,7 +3,7 @@ from object_tools.sites import tools
 
 def autodiscover():
     """
-    Auto-discover INSTALLED_APPS obj_tools.py modules and fail silently when
+    Auto-discover INSTALLED_APPS tools.py modules and fail silently when
     not present. This forces an import on them to register any object tools they
     may want.
     """
@@ -13,12 +13,12 @@ def autodiscover():
 
     for app in settings.INSTALLED_APPS:
         mod = import_module(app)
-        # Attempt to import the app's obj_tools module.
+        # Attempt to import the app's tools module.
         try:
-            import_module('%s.obj_tools' % app)
+            import_module('%s.tools' % app)
         except:
             # Decide whether to bubble up this error. If the app just
-            # doesn't have an obj_tools module, we can ignore the error
+            # doesn't have an tools module, we can ignore the error
             # attempting to import it, otherwise we want it to bubble up.
-            if module_has_submodule(mod, 'obj_tools'):
+            if module_has_submodule(mod, 'tools'):
                 raise
