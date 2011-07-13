@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_models
 
@@ -6,8 +7,8 @@ class AlreadyRegistered(Exception):
 
 class ObjectTools(object):
     """
-    An ObjectTools object providsing various objecttools for various model classes.
-    Models are registered with the AdminSite using the register() method.
+    An ObjectTools object providing various object tools for various model classes.
+    Models are registered with the ObjectTools using the register() method.
     """
     name = 'object-tools'
     app_name = 'object-tools'
@@ -30,6 +31,12 @@ class ObjectTools(object):
         """
         if not object_tool_class:
             return None
+        
+        # Don't validate unless required.
+        if object_tool_class and settings.DEBUG:
+            from object_tools.validation import validate
+            validate(object_tool_class, model_class)
+            #= lambda model, adminclass: None
 
         if not model_class:
             models = get_models()
@@ -40,9 +47,6 @@ class ObjectTools(object):
             if model._meta.abstract:
                 raise ImproperlyConfigured('The model %s is abstract, so it '
                       'cannot be registered with object tools.' % model.__name__)
-
-            if model in self._registry:
-                raise AlreadyRegistered('The model %s is already registered' % model.__name__)
 
             # Instantiate the object_tools class to save in the registry
             if self._registry.has_key(model):
