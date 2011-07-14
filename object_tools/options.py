@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url
+from django.contrib.admin import helpers
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
@@ -59,22 +60,17 @@ class ObjectTool(object):
         return urlpatterns
     urls = property(_urls)
 
-    @csrf_protect_m
-    def _view(self, request, extra_context=None):
+    def construct_context(self, request):
         """
-        View wrapper collecting various extra context for painless form rendering.
+        Builds context with various required variables.
         """
-        try:
-            self.view
-        except AttributeError:
-            raise NotImplementedError('view method not implemented for %s' % self)
-
         opts = self.model._meta
         app_label = opts.app_label
         object_name = opts.object_name.lower()
         form = self.construct_form(request)
+
         media = self.media(form)
-        extra_context = {
+        context = {
             'user': request.user,
             'title': 'Export %s' % opts.verbose_name_plural.lower(),
             'tool': self,
@@ -84,4 +80,17 @@ class ObjectTool(object):
             'form': self.construct_form(request),
             'changelist_url': reverse('admin:%s_%s_changelist' % (app_label, object_name))
         }
-        return self.view(request, extra_context)
+       
+        # Pass along fieldset if sepcififed.
+        if hasattr(form, 'fieldsets'):
+            admin_form = helpers.AdminForm(form, form.fieldsets, {})
+            context['adminform'] = admin_form
+
+        return context
+
+    @csrf_protect_m
+    def _view(self, request, extra_context=None):
+        """
+        View wrapper taking care of houskeeping for painless form rendering.
+        """
+        return self.view(request, self.construct_context(request))
