@@ -7,19 +7,29 @@ import object_tools
 class TestForm(forms.Form):
     pass
 
+
 class TestMediaForm(forms.Form):
     media_field = forms.fields.DateTimeField(
         widget = AdminSplitDateTime,
     )
 
+
 class TestTool(object_tools.ObjectTool):
     name = 'test_tool'
+    label = 'Test Tool'
     form_class = TestForm
-    pass
+    
+    def view(self, request, extra_context=None):
+        pass
+
 
 class TestMediaTool(object_tools.ObjectTool):
     name = 'test_media_tool'
     form_class = TestMediaForm
+    
+    def view(self):
+        pass
+
 
 class TestInvalidTool(object_tools.ObjectTool):
     pass
