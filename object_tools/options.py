@@ -2,6 +2,7 @@ from django import forms
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url
 from django.contrib.admin import helpers
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
@@ -28,6 +29,16 @@ class ObjectTool(object):
         else:
             form = self.form_class(self.model)
         return form
+    
+    def get_permission(self):
+        return u'%s_%s' % (self.name, self.model._meta.object_name.lower())
+
+    def has_permission(self, user):
+        """
+        Returns True if the given request has permission to use the tool.
+        Can be overriden by the user in subclasses.
+        """
+        return user.has_perm(self.model._meta.app_label + '.' + self.get_permission())
     
     def media(self, form):
         """
@@ -93,4 +104,7 @@ class ObjectTool(object):
         """
         View wrapper taking care of houskeeping for painless form rendering.
         """
+        if not self.has_permission(request.user):
+            raise PermissionDenied
+
         return self.view(request, self.construct_context(request))
