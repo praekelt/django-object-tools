@@ -7,7 +7,7 @@ from object_tools import tools
 register = template.Library()
 
 @register.inclusion_tag('object_tools/inclusion_tags/object_tools.html')
-def object_tools(model, exclude=None):
+def object_tools(model, user, exclude=None):
     if inspect.isclass(model):
         model_class = model
     else:
@@ -23,4 +23,9 @@ def object_tools(model, exclude=None):
     if exclude:
         object_tools.remove(exclude)
     
-    return {'object_tools': object_tools}
+    allowed_tools = []
+    for tool in object_tools:
+        if tool.has_permission(user):
+            allowed_tools.append(tool)
+    
+    return {'object_tools': allowed_tools}
