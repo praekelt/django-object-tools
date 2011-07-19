@@ -2,8 +2,8 @@ import sys
 from unittest import TestCase
 
 from django import template
-from django.contrib.auth.models import User
-from django.core.exceptions import ImproperlyConfigured
+from django.contrib.auth.models import User, Permission
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.template import Template
 
 from snippetscream import RequestFactory
@@ -72,13 +72,31 @@ class ObjectToolsInclusionTagsTestCase(TestCase):
     """
     def test_object_tools(self):
         autodiscover()
-        context = template.Context({'model': User})
+        context = template.Context({
+            'model': User,
+            'request': RequestFactory().get('/'),
+        })
+        t = Template("{% load object_tools_inclusion_tags %}{% object_tools model request.user %}")
 
-        t = Template("{% load object_tools_inclusion_tags %}{% object_tools model %}")
+        # Anon user should not have any tools.
+        result = t.render(context)
+        expected_result = '\n'
+        self.failUnlessEqual(result, expected_result)
+
+        # User without permissions should not have any tools.
+        user = User()
+        user.save()
+        context['request'].user = user
+        result = t.render(context)
+        expected_result = '\n'
+        self.failUnlessEqual(result, expected_result)
+
+        # Superuser should have tools.
+        user.is_superuser = True
+        user.save()
         result = t.render(context)
         expected_result = u'\n    <li><a href="/object-tools/auth/user/test_tool/" title=""class="historylink">Test Tool</a></li>\n\n    <li><a href="/object-tools/auth/user/test_media_tool/" title=""class="historylink"></a></li>\n\n'
         self.failUnlessEqual(result, expected_result)
-
 
 class ObjectToolsTestCase(TestCase):
     """
@@ -110,6 +128,7 @@ class ObjectToolsTestCase(TestCase):
         self.failUnlessEqual(len(urls[0]), 8)
         for url in urls[0]:
             self.failUnless(url.__repr__() in ['<RegexURLResolver [<RegexURLPattern auth_message_test_tool ^test_tool/$>] (None:None) ^auth/message/>', '<RegexURLResolver [<RegexURLPattern auth_group_test_tool ^test_tool/$>] (None:None) ^auth/group/>', '<RegexURLResolver [<RegexURLPattern contenttypes_contenttype_test_tool ^test_tool/$>] (None:None) ^contenttypes/contenttype/>', '<RegexURLResolver [<RegexURLPattern sites_site_test_tool ^test_tool/$>] (None:None) ^sites/site/>', '<RegexURLResolver [<RegexURLPattern auth_permission_test_tool ^test_tool/$>] (None:None) ^auth/permission/>', '<RegexURLResolver [<RegexURLPattern auth_user_test_tool ^test_tool/$>] (None:None) ^auth/user/>', '<RegexURLResolver [<RegexURLPattern sessions_session_test_tool ^test_tool/$>] (None:None) ^sessions/session/>', '<RegexURLResolver [<RegexURLPattern admin_logentry_test_tool ^test_tool/$>] (None:None) ^admin/logentry/>'])
+
 
 class ObjectToolTestCase(TestCase):
     """
@@ -165,7 +184,19 @@ class ObjectToolTestCase(TestCase):
         self.failUnlessEqual(urls[0].name, 'auth_user_test_tool', 'URL should be named as "<app_label>_<module_name>_<tool_name>".')
 
     def test_view(self):
-        # Since this is a very light wrapper there's not much to test.
+        # Should raise permission denied on anonymous user.
         request = RequestFactory().get('/')
         tool = TestTool(User)
+        self.failUnlessRaises(PermissionDenied, tool._view, request)
+     
+        # Should raise permission denied for user without permissions.
+        user = User(username='test_view')
+        user.save()
+        request.user = user
+        self.failUnlessRaises(PermissionDenied, tool._view, request)
+
+        # Should not raise permission denied for super user.
+        user.is_superuser = True
+        user.save()
+        request.user = user
         tool._view(request)
