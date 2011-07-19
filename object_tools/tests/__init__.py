@@ -2,7 +2,7 @@ import sys
 from unittest import TestCase
 
 from django import template
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.template import Template
 
@@ -97,6 +97,7 @@ class ObjectToolsInclusionTagsTestCase(TestCase):
         result = t.render(context)
         expected_result = u'\n    <li><a href="/object-tools/auth/user/test_tool/" title=""class="historylink">Test Tool</a></li>\n\n    <li><a href="/object-tools/auth/user/test_media_tool/" title=""class="historylink"></a></li>\n\n'
         self.failUnlessEqual(result, expected_result)
+
 
 class ObjectToolsTestCase(TestCase):
     """
