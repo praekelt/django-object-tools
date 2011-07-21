@@ -11,3 +11,5 @@ Installation
 ------------
 
 #. Install or add django-object-tools to your python path.
+
+#. Add ``object_tools`` to your INSTALLED_APPS setting.
