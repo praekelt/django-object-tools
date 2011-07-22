@@ -86,4 +86,6 @@ Now when you navigate to the change list view of any model you'll find the *dele
 
 .. image:: https://github.com/downloads/praekelt/django-object-tools/delete-example-final.png
 
+Clicking on the *Delete all* tool fires of the view and proceeds with deleting objects as per usual.
 
+**Note:** ``django-object-tools`` adds per tool permissions to the builtin set of default Django permissions. So in this example only superusers or users who have the the *Can delete <model>* permission will be able to see and use the tool.  
