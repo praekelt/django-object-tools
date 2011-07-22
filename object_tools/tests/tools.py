@@ -34,5 +34,6 @@ class TestMediaTool(object_tools.ObjectTool):
 class TestInvalidTool(object_tools.ObjectTool):
     pass
 
+
 object_tools.tools.register(TestTool)
 object_tools.tools.register(TestMediaTool)
