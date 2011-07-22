@@ -78,4 +78,10 @@ Let's go through that line by line:
 
 17. Register the tool with ``object_tools``, thus enabling its display in admin.
 
-Now to enable the tool add ``delete`` to your ``INSTALLED_APPS`` setting. 
+To enable the tool add ``delete`` to your ``INSTALLED_APPS`` setting. 
+
+Now when you navigate to the change list view of any model you'll find the *delete all* object tool in the upper right hand corner.
+
+..image:: https://github.com/downloads/praekelt/django-object-tools/delete-example.png
+
+
