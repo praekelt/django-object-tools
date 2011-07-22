@@ -16,14 +16,19 @@ class ObjectTool(object):
     """
     def __init__(self, model):
         """
-        Set model on which tool is acting for easy access in other methods.
+        Set model and modeladmin on which tool is acting for easy access in other methods.
         """
+        from django.contrib.admin import site
         self.model = model
+        self.modeladmin = site._registry.get(model)
     
     def construct_form(self, request):
         """
         Constructs form from POST method using self.form_class.
         """ 
+        if not hasattr(self, 'form_class'):
+            return None
+
         if request.method == 'POST':
             form = self.form_class(self.model, request.POST)
         else:
@@ -49,8 +54,9 @@ class ObjectTool(object):
 
         media = forms.Media(js=['%s%s' % (settings.ADMIN_MEDIA_PREFIX, url) for url in js])
         
-        for name, field in form.fields.iteritems():
-            media = media + field.widget.media
+        if form:
+            for name, field in form.fields.iteritems():
+                media = media + field.widget.media
 
         return media
     
@@ -88,7 +94,7 @@ class ObjectTool(object):
             'opts': opts,
             'app_label': app_label,
             'media': media,
-            'form': self.construct_form(request),
+            'form': form,
             'changelist_url': reverse('admin:%s_%s_changelist' % (app_label, object_name))
         }
        
