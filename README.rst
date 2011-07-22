@@ -13,6 +13,8 @@ Installation
 
 #. Add ``object_tools`` to your ``INSTALLED_APPS`` setting. ``django-object-tools`` overrides certain admin templates so you have to add it **before** ``django.contrib.admin``.
 
+#. Call object tools ``autodiscover`` method. This works in a similar fashion as Django's admin; discovering which tools to render in admin. You can do this in any module that is called during initialisation but we recommend doing it in urls.py, as illustrated in the next point.
+
 #. Hook up URLConf. Do this by pointing a given URL at the ``Tools.urls`` method. In this example, we register the default ``Tools`` instance ``object_tools.tools`` at the URL ``/object-tools/``::
     
     # urls.py
