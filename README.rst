@@ -1,6 +1,6 @@
 Django Object Tools
 ===================
-**Django app enabling painless creation of additional admin object tools by third party apps.**
+**Django app enabling painless creation of additional admin object tools.**
 
 .. contents:: Contents
     :depth: 5
@@ -11,7 +11,7 @@ Installation
 ------------
 #. Install or add ``django-object-tools`` to your python path.
 
-#. Add ``object_tools`` to your ``INSTALLED_APPS`` setting. ``django-object-tools`` overrides some admin templates so you have to add it **before** ``django.contrib.admin``.
+#. Add ``object_tools`` to your ``INSTALLED_APPS`` setting. ``django-object-tools`` overrides certain admin templates so you have to add it **before** ``django.contrib.admin``.
 
 #. Hook up URLConf. Do this by pointing a given URL at the ``Tools.urls`` method. In this example, we register the default ``Tools`` instance ``object_tools.tools`` at the URL ``/object-tools/``::
     
@@ -33,7 +33,7 @@ Installation
 Usage
 -----
 
-``django-object-tools`` itself doesn't do much in terms of providing useful object tools. Its purpose is to simplify creation and integration of custom tools delivered by other Django applications. To that end it takes care of the messy details like permissions and admin template integration so you can focus on the fun stuff.
+``django-object-tools`` itself doesn't do much in terms of providing useful tools. Its purpose is to simplify creation and integration of custom tools delivered by other Django applications. To that end it takes care of the messy details like permissions and admin template integration so you can focus on the fun stuff.
 
 As an example lets create a tool allowing you to delete all objects. Yes this is a bit convoluted but it's a good toy example for illustration purposes. Have a look at `django-export <http://pypi.python.org/pypi/django-export>`_ and `django-order <http://pypi.python.org/pypi/django-order>`_ for examples of real world tools leveraging ``django-object-tools``.    
 
@@ -50,7 +50,7 @@ Edit ``tools.py`` to look like this::
 
     class Delete(object_tools.ObjectTool):
         name = 'delete'
-        label = 'Delete All'
+        label = 'Delete all'
 
         def view(self, request, extra_context=None):
             queryset = self.model.objects.all()
@@ -64,7 +64,7 @@ Edit ``tools.py`` to look like this::
 
 Let's go through that line by line:
 
-1. import object_tools. ``object_tools`` behaves similarly to Django's admin allowing you to explicitly register tools, see line 17. It also provides the ``ObjectTool`` base class.
+1. ``object_tools`` behaves similarly to Django's admin allowing you to explicitly register tools, see line 17. It also provides the ``ObjectTool`` base class.
 
 3. import ``delete_selected`` method provided by Django. This method will do all the heavy lifting.
 
@@ -72,7 +72,7 @@ Let's go through that line by line:
 
 6. Set tool name to ``delete``. This has to be a unique name identifying the tool. This is used to uniquely identify the tool internally and for instance to setup permissions.
 
-7. Set label to ``Delete All``. The label is displayed within admin and not the name, thus allowing you to specify a more verbose, user friendly label.
+7. Set label to ``Delete all``. The label is displayed within admin and not the name, thus allowing you to specify a more verbose, user friendly label.
 
 9. Implement ``view`` method. This is the brains of your tool. The ``view`` method is called when the user executes your tool, so your tool logic would go here. This can be any view like code, as long as it returns an ``HttpResponse`` object. In this case we wrap Django's builtin ``delete_selected`` to provide the form, logic and template code to perform the actual delete.
 
