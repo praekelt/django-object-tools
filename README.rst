@@ -13,9 +13,9 @@ Installation
 
 #. Add ``object_tools`` to your ``INSTALLED_APPS`` setting. ``django-object-tools`` overrides certain admin templates so you have to add it **before** ``django.contrib.admin``.
 
-#. Call object tools ``autodiscover`` method. This works in a similar fashion as Django's admin; discovering which tools to render in admin. You can do this in any module that is called during initialisation but we recommend doing it in urls.py, as illustrated in the next point.
+#. Call object tool's ``autodiscover`` method. This works in a similar fashion as Django's admin; discovering which tools to render in admin. You can do this in any module that is called during initialization but we recommend doing it in ``urls.py``, as illustrated in the next point.
 
-#. Hook up URLConf. Do this by pointing a given URL at the ``Tools.urls`` method. In this example, we register the default ``Tools`` instance ``object_tools.tools`` at the URL ``/object-tools/``::
+#. Hook up URLConf. Do this by pointing a given URL at the ``tools.urls`` method. In this example, we register the default ``Tools`` instance ``object_tools.tools`` at the URL ``/object-tools/``::
     
     # urls.py
     from django.conf.urls.defaults import *
@@ -76,7 +76,7 @@ Let's go through that line by line:
 
 7. Set label to ``Delete all``. The label is displayed within admin and not the name, thus allowing you to specify a more verbose, user friendly label.
 
-9. Implement ``view`` method. This is the brains of your tool. The ``view`` method is called when the user executes your tool, so your tool logic would go here. This can be any view like code, as long as it returns an ``HttpResponse`` object. In this case we wrap Django's builtin ``delete_selected`` to provide the form, logic and template code to perform the actual delete.
+9. Implement ``view`` method. This is the brains of your tool. The ``view`` method is called when the user executes your tool, so your tool logic would go here. This can be any view like code, as long as it returns an ``HttpResponse`` object. In this case we wrap Django's built-in ``delete_selected`` to provide the form, logic and template code to perform the actual delete.
 
 17. Register the tool with ``object_tools``, thus enabling its display in admin.
 
@@ -88,4 +88,4 @@ Now when you navigate to the change list view of any model you'll find the *dele
 
 Clicking on the *Delete all* tool fires of the view and proceeds with deleting objects as per usual.
 
-**Note:** ``django-object-tools`` adds per tool permissions to the builtin set of default Django permissions. So in this example only superusers or users who have the the *Can delete <model>* permission will be able to see and use the tool. So if you can't see or use a particular tool make sure the authenticated user has the required permissions to do so.  
+**Note:** ``django-object-tools`` adds per tool permissions to the built-in set of default Django permissions. So in this example only superusers or users who have the the *Can delete <model>* permission will be able to see and use the tool. If you can't see or use a particular tool make sure the authenticated user has the required permissions to do so.  
