@@ -49,15 +49,6 @@ class ValidateTestCase(TestCase):
 
         TestInvalidTool.label = 'Test Invalid Tool'
         
-        # Fail without 'form_class' member.
-        self.failUnlessRaises(ImproperlyConfigured, validate, TestInvalidTool, User)
-        try:
-            validate(TestInvalidTool, User)
-        except ImproperlyConfigured, e:
-            self.failUnlessEqual(e.message, "No 'form_class' attribute found for tool TestInvalidTool.")
-
-        TestInvalidTool.form_class = TestForm
-        
         # Fail without 'view' member.
         self.failUnlessRaises(NotImplementedError, validate, TestInvalidTool, User)
         try:
@@ -149,9 +140,7 @@ class ObjectToolTestCase(TestCase):
             self.failUnless(value)
     
     def test_construct_form(self):
-        # Tool should provide form class.
         tool = ObjectTool(User)
-        self.failUnlessRaises(AttributeError, tool.construct_form, MockRequest())
         tool = TestTool(User)
         tool.construct_form(MockRequest())
 

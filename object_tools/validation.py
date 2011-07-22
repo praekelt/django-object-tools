@@ -11,6 +11,6 @@ def validate(tool_class, model_class):
     
     if not hasattr(tool_class, 'label'):
         raise ImproperlyConfigured("No 'label' attribute found for tool %s." % tool_class.__name__)
-    
-    if not hasattr(tool_class, 'view') and not hasattr(tool_class, '_view'):
+   
+    if not hasattr(tool_class, 'view'):
         raise NotImplementedError("'view' method not implemented for tool %s." % tool_class.__name__)
