@@ -2,6 +2,8 @@ Django Object Tools
 ===================
 **Django app enabling painless creation of additional admin object tools.**
 
+.. image:: https://github.com/downloads/praekelt/django-object-tools/example-tools.png
+
 .. contents:: Contents
     :depth: 5
 
