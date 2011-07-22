@@ -28,6 +28,8 @@ Installation
 
 #. Obviously Django Admin itself needs to be installed, as described `here <https://docs.djangoproject.com/en/dev/ref/contrib/admin/>`_.
 
+#. Remember to run ``syncdb`` whenever you install new tools to setup permissions.
+
 Usage
 -----
 
@@ -41,11 +43,10 @@ Firstly create a Django app folder structure as per usual, with the root directo
         __init__.py
         tools.py
 
-Edit tools.py to look like this::
-
-    import object_tools
+Edit ``tools.py`` to look like this::
 
     from django.contrib.admin.actions import delete_selected
+    import object_tools
 
     class Delete(object_tools.ObjectTool):
         name = 'delete'
@@ -61,5 +62,12 @@ Edit tools.py to look like this::
 
     object_tools.tools.register(Delete)
 
+Let's go through that line by line:
 
-    
+1. import object_tools. ``object_tools`` behaves similarly to Django's admin allowing you to explicitly register tools, see line 17. It also provides the ``ObjectTool`` base class.
+3. import ``delete_selected`` method provided by Django. This method will do all the heavy lifting.
+5. Create a tool class inheriting from ``object_tools.ObjectTool``. All object tools have to inherit from ``object_tools.ObjectTool``. ``ObjectTool`` provides various methods to simplify creation of tools. See `object_tools.options.py <https://github.com/praekelt/django-object-tools/blob/master/object_tools/options.py>`_ for more details.
+6. Set tool name to ``'delete'``. This has to be a unique name identifying the tool. This is used mostly internally, for instance to setup permissions.
+7. Set label to ``Delete All``. The label is displayed within admin and not the name, thus allowing you to specify a more verbose, user friendly label.
+9. Implement ``view`` method. This is the brains of your tool. The ``view`` method is called when the user executes your tool, so you normally specify your tool logic here. This can be any view like code, as long as it returns an ``HttpResponse`` object. In this case we wrap Django's builtin ``delete_selected`` to provide the forms, logic and template code to perform the actual delete.
+17. Register the tool with ``object_tools``, thus enabling its display in admin.    
