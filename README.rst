@@ -35,10 +35,31 @@ Usage
 
 As an example lets create a tool allowing you to delete all objects. Yes this is a bit convoluted but it's a good toy example for illustration purposes. Have a look at `django-export <http://pypi.python.org/pypi/django-export>`_ and `django-order <http://pypi.python.org/pypi/django-order>`_ for examples of real world tools leveraging ``django-object-tools``.    
 
-Firstly create a normal Django app folder structure as per usual, with the root directory named ``delete``, including a file called ``tools.py``. It should look as follows::
+Firstly create a Django app folder structure as per usual, with the root directory named ``delete``, including a file called ``tools.py``. It should look as follows::
 
     delete/
         __init__.py
         tools.py
 
+Edit tools.py to look like this::
 
+    import object_tools
+
+    from django.contrib.admin.actions import delete_selected
+
+    class Delete(object_tools.ObjectTool):
+        name = 'delete'
+        label = 'Delete All'
+
+        def view(self, request, extra_context=None):
+            queryset = self.model.objects.all()
+            response = delete_selected(self.modeladmin, request, queryset)
+            if response:
+                return response
+            else:
+                return self.modeladmin.changelist_view(request)
+
+    object_tools.tools.register(Delete)
+
+
+    
