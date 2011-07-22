@@ -12,7 +12,7 @@ class TestRunner(test):
 setup(
     name='django-object-tools',
     version='0.0.1',
-    description='Django app allowing to easily add admin object tools.',
+    description='Django app enabling painless creation of additional admin object tools.',
     long_description = open('README.rst', 'r').read() + open('AUTHORS.rst', 'r').read() + open('CHANGELOG.rst', 'r').read(),
     author='Praekelt Foundation',
     author_email='dev@praekelt.com',
