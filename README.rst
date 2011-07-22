@@ -70,11 +70,12 @@ Let's go through that line by line:
 
 5. Create a tool class inheriting from ``object_tools.ObjectTool``. All object tools have to inherit from ``object_tools.ObjectTool``. ``ObjectTool`` provides various methods to simplify creation of tools. See `object_tools.options.py <https://github.com/praekelt/django-object-tools/blob/master/object_tools/options.py>`_ for more details.
 
-6. Set tool name to ``'delete'``. This has to be a unique name identifying the tool. This is used mostly internally, for instance to setup permissions.
+6. Set tool name to ``delete``. This has to be a unique name identifying the tool. This is used to uniquely identify the tool internally and for instance to setup permissions.
 
 7. Set label to ``Delete All``. The label is displayed within admin and not the name, thus allowing you to specify a more verbose, user friendly label.
 
-9. Implement ``view`` method. This is the brains of your tool. The ``view`` method is called when the user executes your tool, so you normally specify your tool logic here. This can be any view like code, as long as it returns an ``HttpResponse`` object. In this case we wrap Django's builtin ``delete_selected`` to provide the forms, logic and template code to perform the actual delete.
+9. Implement ``view`` method. This is the brains of your tool. The ``view`` method is called when the user executes your tool, so your tool logic would go here. This can be any view like code, as long as it returns an ``HttpResponse`` object. In this case we wrap Django's builtin ``delete_selected`` to provide the form, logic and template code to perform the actual delete.
 
 17. Register the tool with ``object_tools``, thus enabling its display in admin.
 
+Now to enable the tool add ``delete`` to your ``INSTALLED_APPS`` setting. 
