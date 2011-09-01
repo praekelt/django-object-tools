@@ -2,19 +2,22 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import get_models
 
+
 class AlreadyRegistered(Exception):
     pass
 
+
 class ObjectTools(object):
     """
-    An ObjectTools object providing various object tools for various model classes.
-    Models are registered with the ObjectTools using the register() method.
+    An ObjectTools object providing various object tools for various model
+    classes. Models are registered with the ObjectTools using the
+    register() method.
     """
     name = 'object-tools'
     app_name = 'object-tools'
-    
+
     def __init__(self):
-        self._registry = {} # model class -> object_tools instance
+        self._registry = {}  # model class -> object_tools instance
 
     def register(self, object_tool_class, model_class=None):
         """
@@ -22,7 +25,7 @@ class ObjectTools(object):
 
         The model(s) should be Model classes, not instances.
 
-        If a model class isn't given the object tool class will be registered 
+        If a model class isn't given the object tool class will be registered
         for all models.
 
         If a model is already registered, this will raise AlreadyRegistered.
@@ -31,7 +34,7 @@ class ObjectTools(object):
         """
         if not object_tool_class:
             return None
-        
+
         # Don't validate unless required.
         if object_tool_class and settings.DEBUG:
             from object_tools.validation import validate
@@ -41,19 +44,20 @@ class ObjectTools(object):
         if not model_class:
             models = get_models()
         else:
-            models = [model_class,]
+            models = [model_class, ]
 
         for model in models:
             if model._meta.abstract:
-                raise ImproperlyConfigured('The model %s is abstract, so it '
-                      'cannot be registered with object tools.' % model.__name__)
+                raise ImproperlyConfigured('The model %s is abstract, so it \
+                        cannot be registered with object tools.' % \
+                        model.__name__)
 
             # Instantiate the object_tools class to save in the registry
             if self._registry.has_key(model):
                 self._registry[model].append(object_tool_class(model))
             else:
-                self._registry[model] = [object_tool_class(model),]
-    
+                self._registry[model] = [object_tool_class(model), ]
+
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
 
@@ -63,7 +67,8 @@ class ObjectTools(object):
         for model, object_tools in self._registry.iteritems():
             for object_tool in object_tools:
                 urlpatterns += patterns('',
-                    url(r'^%s/%s/' % (model._meta.app_label, model._meta.module_name),
+                    url(r'^%s/%s/' % (model._meta.app_label, \
+                            model._meta.module_name),
                         include(object_tool.urls))
                 )
 
@@ -74,5 +79,6 @@ class ObjectTools(object):
         return self.get_urls(), self.app_name, self.name
 
 # This global object represents the default object tools, for the common case.
-# You can instantiate ObjectTools in your own code to create a custom object tools object.
+# You can instantiate ObjectTools in your own code to create a
+# custom object tools object.
 tools = ObjectTools()

@@ -1,11 +1,12 @@
 from object_tools.options import ObjectTool
 from object_tools.sites import tools
 
+
 def autodiscover():
     """
     Auto-discover INSTALLED_APPS tools.py modules and fail silently when
-    not present. This forces an import on them to register any object tools they
-    may want.
+    not present. This forces an import on them to register any object
+    tools they may want.
     """
     from django.conf import settings
     from django.utils.importlib import import_module

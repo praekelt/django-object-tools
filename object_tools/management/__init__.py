@@ -3,22 +3,26 @@ from django.db.models import signals
 
 import object_tools
 
+
 def _get_permission_codename(tool, opts):
     return u'%s_%s' % (tool.name, opts.object_name.lower())
+
 
 def _get_all_permissions(opts, tools):
     "Returns (codename, name) for all tools."
     perms = []
     for tool in tools:
-        perms.append((_get_permission_codename(tool, opts), u'Can %s %s' % (tool.name, opts.verbose_name_plural)))
+        perms.append((_get_permission_codename(tool, opts), u'Can %s %s' % \
+                (tool.name, opts.verbose_name_plural)))
     return perms
+
 
 def create_permissions(app, created_models, verbosity, **kwargs):
     """
-    Almost exactly the same as django.contrib.auth.management.__init__.py 
+    Almost exactly the same as django.contrib.auth.management.__init__.py
     """
     from django.contrib.contenttypes.models import ContentType
-    
+
     object_tools.autodiscover()
     tools = object_tools.tools._registry
 
@@ -53,6 +57,6 @@ def create_permissions(app, created_models, verbosity, **kwargs):
         )
         if verbosity >= 2:
             print "Adding permission '%s'" % p
-    
+
 signals.post_syncdb.connect(create_permissions,
-    dispatch_uid = "object_tools.management.create_permissions")
+    dispatch_uid="object_tools.management.create_permissions")
