@@ -95,7 +95,7 @@ class ObjectTool(object):
         media = self.media(form)
         context = {
             'user': request.user,
-            'title': 'Export %s' % opts.verbose_name_plural.lower(),
+            'title': '%s %s' % (self.label, opts.verbose_name_plural.lower()),
             'tool': self,
             'opts': opts,
             'app_label': app_label,
