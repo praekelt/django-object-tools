@@ -29,8 +29,10 @@ def object_tools(context, model, user, exclude=None):
         if tool.has_permission(user):
             allowed_tools.append(tool)
     
-    ret_dict = {'object_tools': allowed_tools }
+    ret_dict = {'object_tools': allowed_tools}
     if context.has_key('request'):
-       return template.RequestContext(context['request'], ret_dict)
+       ret_dict.update({
+           'request': context['request']
+        })
 
     return ret_dict

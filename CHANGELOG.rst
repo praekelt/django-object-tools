@@ -1,6 +1,10 @@
 Changelog
 =========
 
+0.0.7
+-----
+#. Pass context to object_tools tag. Thanks `slafs <https://github.com/slafs>`_
+
 0.0.6
 -----
 #. Corrected 'str' object has no attribute 'has_perm' bug `#7 <https://github.com/praekelt/django-export/issues/7>`_.
