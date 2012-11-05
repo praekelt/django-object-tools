@@ -23,15 +23,6 @@ class ObjectTool(object):
         from django.contrib.admin import site
         self.model = model
         self.modeladmin = site._registry.get(model)
-        if self.modeladmin:
-            self.modeladmin_changelist_view = self.modeladmin.changelist_view
-            self.modeladmin.changelist_view = self.changelist_view
-
-    def changelist_view(self, request, extra_context=None):
-        """
-        Simple wrapper to pass request to admin/change_list.html
-        """
-        return self.modeladmin_changelist_view(request, extra_context={'request': request})
 
     def construct_form(self, request):
         """
