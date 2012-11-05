@@ -23,6 +23,15 @@ class ObjectTool(object):
         from django.contrib.admin import site
         self.model = model
         self.modeladmin = site._registry.get(model)
+        if self.modeladmin:
+            self.modeladmin_changelist_view = self.modeladmin.changelist_view
+            self.modeladmin.changelist_view = self.changelist_view
+
+    def changelist_view(self, request, extra_context=None):
+        """
+        Simple wrapper to pass request to admin/change_list.html
+        """
+        return self.modeladmin_changelist_view(request, extra_context={'request': request})
 
     def construct_form(self, request):
         """
@@ -52,11 +61,12 @@ class ObjectTool(object):
         """
         Collects admin and form media.
         """
-        js = ['js/core.js', 'js/admin/RelatedObjectLookups.js',
-              'js/jquery.min.js', 'js/jquery.init.js']
+        js = ['admin/js/core.js', 'admin/js/admin/RelatedObjectLookups.js',
+              'admin/js/jquery.min.js', 'admin/js/jquery.init.js']
 
-        media = forms.Media(js=['%s%s' % (settings.ADMIN_MEDIA_PREFIX, url) \
-                for url in js])
+        media = forms.Media(
+            js=['%s%s' % (settings.STATIC_URL, url) for url in js],
+        )
 
         if form:
             for name, field in form.fields.iteritems():
