@@ -1,6 +1,9 @@
 from django import forms
 from django.conf import settings
-from django.conf.urls.defaults import patterns, url
+try:
+    from django.conf.urls import patterns, url
+except ImportError:
+    from django.conf.urls.defaults import patterns, url
 from django.contrib.admin import helpers
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
