@@ -13,7 +13,7 @@ setup(
     test_suite = "setuptest.setuptest.SetupTestSuite",
     tests_require = [
         'django-snippetscream',
-        'django-setuptest>=0.0.6',
+        'django-setuptest>=0.1',
     ],
     classifiers = [
         "Programming Language :: Python",
