@@ -14,7 +14,7 @@ def object_tools(context, model, user, exclude=None):
     else:
         model_class = model.__class__
 
-    if tools._registry.has_key(model_class):
+    if model_class in tools._registry:
         object_tool_classes = tools._registry[model_class]
     else:
         object_tool_classes = []
@@ -28,11 +28,11 @@ def object_tools(context, model, user, exclude=None):
     for tool in object_tools:
         if tool.has_permission(user):
             allowed_tools.append(tool)
-    
+
     ret_dict = {'object_tools': allowed_tools}
-    if context.has_key('request'):
-       ret_dict.update({
-           'request': context['request']
+    if 'request' in context:
+        ret_dict.update({
+            'request': context['request']
         })
 
     return ret_dict

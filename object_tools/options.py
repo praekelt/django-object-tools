@@ -80,7 +80,7 @@ class ObjectTool(object):
 
     def reverse(self):
         info = self.model._meta.app_label, self.model._meta.module_name, \
-                self.name
+            self.name
         return reverse('object-tools:%s_%s_%s' % info)
 
     def _urls(self):
@@ -88,7 +88,7 @@ class ObjectTool(object):
         URL patterns for tool linked to _view method.
         """
         info = self.model._meta.app_label, self.model._meta.module_name, \
-                self.name
+            self.name
         urlpatterns = patterns('',
             url(r'^%s/$' % self.name,
                 self._view,
@@ -115,8 +115,8 @@ class ObjectTool(object):
             'app_label': app_label,
             'media': media,
             'form': form,
-            'changelist_url': reverse('admin:%s_%s_changelist' % \
-                    (app_label, object_name))
+            'changelist_url': reverse('admin:%s_%s_changelist' % (app_label,
+                                                                  object_name))
         }
 
         # Pass along fieldset if sepcififed.
