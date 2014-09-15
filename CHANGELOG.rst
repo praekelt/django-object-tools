@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.1.0
+-----
+#. Fixed campatability issues with newer versions of Django. This however may not be
+backward compatable with versions of Django earlier than 1.4.
+
 0.0.7
 -----
 #. Pass context to object_tools tag. Thanks `slafs <https://github.com/slafs>`_
