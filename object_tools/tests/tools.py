@@ -26,6 +26,7 @@ class TestTool(object_tools.ObjectTool):
 
 class TestMediaTool(object_tools.ObjectTool):
     name = 'test_media_tool'
+    label = ''
     form_class = TestMediaForm
 
     def view(self):
