@@ -4,14 +4,14 @@
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/forms.css" />{% endblock %}
 
 {% block extrahead %}{{ block.super }}
-<script type="text/javascript" src="{% url admin:jsi18n %}"></script>
+<script type="text/javascript" src="{% url "admin:jsi18n" %}"></script>
 {{ media }}
 {% endblock %}
 
 {% block breadcrumbs %}{% if not is_popup %}
 <div class="breadcrumbs">
-    <a href="{% url admin:index %}">{% trans "Home" %}</a> &rsaquo;
-     <a href="{% url admin:app_list app_label %}">{{ app_label|capfirst|escape }}</a> &rsaquo;
+    <a href="{% url "admin:index" %}">{% trans "Home" %}</a> &rsaquo;
+     <a href="{% url "admin:app_list" app_label %}">{{ app_label|capfirst|escape }}</a> &rsaquo;
      <a href="{{changelist_url }}">{{ opts.verbose_name_plural|capfirst }}</a> &rsaquo;
      {% trans tool.label %}
 </div>
