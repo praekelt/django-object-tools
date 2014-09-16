@@ -2,6 +2,9 @@ Django Object Tools
 ===================
 **Django app enabling painless creation of additional admin object tools.**
 
+.. image:: https://travis-ci.org/praekelt/django-object-tools.svg
+    :target: https://travis-ci.org/praekelt/django-object-tools
+
 .. image:: https://github.com/downloads/praekelt/django-object-tools/example-tools.png
 
 .. contents:: Contents
@@ -18,7 +21,7 @@ Installation
 #. Call object tool's ``autodiscover`` method. This works in a similar fashion as Django's admin; discovering which tools to render in admin. You can do this in any module that is called during initialization but we recommend doing it in ``urls.py``, as illustrated in the next point.
 
 #. Hook up URLConf. Do this by pointing a given URL at the ``tools.urls`` method. In this example, we register the default ``Tools`` instance ``object_tools.tools`` at the URL ``/object-tools/``::
-    
+
     # urls.py
     from django.conf.urls.defaults import *
 
@@ -39,7 +42,7 @@ Usage
 
 ``django-object-tools`` itself doesn't do much in terms of providing useful tools. Its purpose is to simplify creation and integration of custom tools delivered by other Django applications. To that end it takes care of the messy details like permissions and admin template integration so you can focus on the fun stuff.
 
-As an example lets create a tool allowing you to delete all objects. Yes this is a bit convoluted but it's a good toy example for illustration purposes. Have a look at `django-export <http://pypi.python.org/pypi/django-export>`_ and `django-order <http://pypi.python.org/pypi/django-order>`_ for examples of real world tools leveraging ``django-object-tools``.    
+As an example lets create a tool allowing you to delete all objects. Yes this is a bit convoluted but it's a good toy example for illustration purposes. Have a look at `django-export <http://pypi.python.org/pypi/django-export>`_ and `django-order <http://pypi.python.org/pypi/django-order>`_ for examples of real world tools leveraging ``django-object-tools``.
 
 Firstly create a Django app folder structure as per usual, with the root directory named ``delete``, including a file called ``tools.py``. It should look as follows::
 
@@ -82,7 +85,7 @@ Let's go through that line by line:
 
 17. Register the tool with ``object_tools``, thus enabling its display in admin.
 
-To enable the tool add ``delete`` to your ``INSTALLED_APPS`` setting. 
+To enable the tool add ``delete`` to your ``INSTALLED_APPS`` setting.
 
 Now when you navigate to the change list view of any model you'll find the *delete all* object tool in the upper right hand corner.
 
@@ -90,5 +93,4 @@ Now when you navigate to the change list view of any model you'll find the *dele
 
 Clicking on the *Delete all* tool fires off the view and proceeds with deleting objects as per usual.
 
-**Note:** ``django-object-tools`` adds per tool permissions to the built-in set of default Django permissions. So in this example only superusers or users who have the the *Can delete <model>* permission will be able to see and use the tool. If you can't see or use a particular tool make sure the authenticated user has the required permissions to do so. 
-
+**Note:** ``django-object-tools`` adds per tool permissions to the built-in set of default Django permissions. So in this example only superusers or users who have the the *Can delete <model>* permission will be able to see and use the tool. If you can't see or use a particular tool make sure the authenticated user has the required permissions to do so.
