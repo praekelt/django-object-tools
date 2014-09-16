@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.0.1
+-----
+#. Fixed campatability issues with Django 1.5+ url templatetags.
+
 1.0.0
 -----
 #. Fixed campatability issues with newer versions of Django. This however may not be

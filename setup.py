@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-object-tools',
-    version='1.0.0',
+    version='1.0.1',
     description='Django app enabling painless creation of additional admin object tools.',
     long_description=open('README.rst', 'r').read() + open('AUTHORS.rst', 'r').read() + open('CHANGELOG.rst', 'r').read(),
     author='Praekelt Foundation',
