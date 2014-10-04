@@ -142,7 +142,6 @@ class ObjectToolsTestCase(TestCase):
         tools.register(TestTool)
         urls = tools.urls
         self.failUnlessEqual(len(urls[0]), 6)
-        print [url.url_patterns[0].__repr__() for url in urls[0]]
         for url in urls[0]:
             self.failUnless(url.url_patterns[0].__repr__() in [
                 '<RegexURLPattern sessions_session_test_tool ^test_tool/$>',
