@@ -1,3 +1,5 @@
+default_app_config = 'object_tools.tests.tools.ObjectToolsAppConfig'
+
 from object_tools.options import ObjectTool
 from object_tools.sites import tools
 
