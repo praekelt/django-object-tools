@@ -3,12 +3,16 @@ Changelog
 
 1.0.1
 -----
-#. Fixed campatability issues with Django 1.5+ url templatetags.
+#. Django 1.7 Compatibility
+
+1.0.1
+-----
+#. Fixed compatibility issues with Django 1.5+ url templatetags.
 
 1.0.0
 -----
-#. Fixed campatability issues with newer versions of Django. This however may not be
-backward compatable with versions of Django earlier than 1.4.
+#. Fixed compatibility issues with newer versions of Django. This however may not be
+backward compatible with versions of Django earlier than 1.4.
 
 0.0.7
 -----
