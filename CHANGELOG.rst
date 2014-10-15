@@ -1,7 +1,11 @@
 Changelog
 =========
 
-1.0.1
+1.0.3
+-----
+#. Fixed Django 1.4 templatetag issues
+
+1.0.2
 -----
 #. Django 1.7 Compatibility
 
