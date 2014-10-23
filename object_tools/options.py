@@ -79,7 +79,7 @@ class ObjectTool(object):
         return media
 
     def reverse(self):
-        info = self.model._meta.app_label, self.model._meta.module_name, \
+        info = self.model._meta.app_label, self.model._meta.model_name, \
             self.name
         return reverse('object-tools:%s_%s_%s' % info)
 
@@ -87,7 +87,7 @@ class ObjectTool(object):
         """
         URL patterns for tool linked to _view method.
         """
-        info = self.model._meta.app_label, self.model._meta.module_name, \
+        info = self.model._meta.app_label, self.model._meta.model_name, \
             self.name
         urlpatterns = patterns('',
             url(r'^%s/$' % self.name,
