@@ -71,7 +71,7 @@ class ObjectTools(object):
             for object_tool in object_tools:
                 urlpatterns += patterns('',
                     url(r'^%s/%s/' % (model._meta.app_label,
-                        model._meta.module_name),
+                        model._meta.model_name),
                         include(object_tool.urls))
                 )
 
