@@ -35,7 +35,9 @@ class ObjectTool(object):
         """
         Simple wrapper to pass request to admin/change_list.html
         """
-        return self.modeladmin_changelist_view(request, extra_context={'request': request})
+        return self.modeladmin_changelist_view(
+            request, extra_context={'request': request}
+        )
 
     def construct_form(self, request):
         """
@@ -45,7 +47,7 @@ class ObjectTool(object):
             return None
 
         if request.method == 'POST':
-            form = self.form_class(self.model, request.POST)
+            form = self.form_class(self.model, request.POST, request.FILES)
         else:
             form = self.form_class(self.model)
         return form
@@ -58,8 +60,9 @@ class ObjectTool(object):
         Returns True if the given request has permission to use the tool.
         Can be overriden by the user in subclasses.
         """
-        return user.has_perm(self.model._meta.app_label + '.' + \
-                self.get_permission())
+        return user.has_perm(
+            self.model._meta.app_label + '.' + self.get_permission()
+        )
 
     def media(self, form):
         """
@@ -69,7 +72,7 @@ class ObjectTool(object):
               'admin/js/jquery.min.js', 'admin/js/jquery.init.js']
 
         media = forms.Media(
-            js=['%s%s' % (settings.STATIC_URL, url) for url in js],
+            js=['%s%s' % (settings.STATIC_URL, u) for u in js],
         )
 
         if form:
@@ -89,10 +92,8 @@ class ObjectTool(object):
         """
         info = self.model._meta.app_label, self.model._meta.module_name, \
             self.name
-        urlpatterns = patterns('',
-            url(r'^%s/$' % self.name,
-                self._view,
-                name='%s_%s_%s' % info),
+        urlpatterns = patterns(
+            '', url(r'^%s/$' % self.name, self._view, name='%s_%s_%s' % info),
         )
         return urlpatterns
     urls = property(_urls)
@@ -115,8 +116,9 @@ class ObjectTool(object):
             'app_label': app_label,
             'media': media,
             'form': form,
-            'changelist_url': reverse('admin:%s_%s_changelist' % (app_label,
-                                                                  object_name))
+            'changelist_url': reverse('admin:%s_%s_changelist' % (
+                app_label, object_name
+            ))
         }
 
         # Pass along fieldset if sepcififed.
