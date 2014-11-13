@@ -36,19 +36,13 @@
 {% block bodyclass %}change-list{% endblock %}
 
 {% if not is_popup %}
-  {% block breadcrumbs %}
-    <div class="breadcrumbs">
-      <a href="../../">
-        {% trans "Home" %}
-      </a>
-       &rsaquo;
-       <a href="../">
-         {{ app_label|capfirst }}
-      </a>
-      &rsaquo;
-      {{ cl.opts.verbose_name_plural|capfirst }}
-    </div>
-  {% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:app_list' app_label=cl.opts.app_label %}">{{ cl.opts.app_config.verbose_name }}</a>
+    &rsaquo; {{ cl.opts.verbose_name_plural|capfirst }}
+</div>
+{% endblock %}
 {% endif %}
 
 {% block coltype %}flex{% endblock %}
@@ -56,19 +50,20 @@
 {% block content %}
   <div id="content-main">
     {% block object-tools %}
-      {% if has_add_permission %}
-        <ul class="object-tools">
-          {% block object-tools-items %}
+      <ul class="object-tools">
+        {% if has_add_permission %}
+          <li>
+            <a href="add/{% if is_popup %}?_popup=1{% endif %}" class="addlink">
+              {% blocktrans with cl.opts.verbose_name as name %}Add {{ name }}{% endblocktrans %}
+            </a>
+          </li>
+        {% endif %}
+        {% block object-tools-items %}
             {% object_tools cl.model user %}
-            <li>
-              <a href="add/{% if is_popup %}?_popup=1{% endif %}" class="addlink">
-                {% blocktrans with cl.opts.verbose_name as name %}Add {{ name }}{% endblocktrans %}
-              </a>
-            </li>
-          {% endblock %}
+        {% endblock %}
         </ul>
-      {% endif %}
     {% endblock %}
+
     {% if cl.formset.errors %}
         <p class="errornote">
         {% blocktrans count cl.formset.errors|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
