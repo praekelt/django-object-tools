@@ -70,9 +70,9 @@ class ObjectTools(object):
         for model, object_tools in self._registry.iteritems():
             for object_tool in object_tools:
                 try:
-                    model_name = self.rel.to._meta.module_name
+                    model_name = model._meta.module_name
                 except AttributeError:
-                    model_name = self.rel.to._meta.model_name 
+                    model_name = model._meta.model_name 
                 urlpatterns += patterns('',
                     url(r'^%s/%s/' % (model._meta.app_label,
                         model_name),
