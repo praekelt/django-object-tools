@@ -27,6 +27,7 @@ Installation
 
     import object_tools
 
+    # you can skip this if you're using Django >= 1.7
     object_tools.autodiscover()
 
     urlpatterns = patterns('',
