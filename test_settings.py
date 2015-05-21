@@ -15,9 +15,9 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.admin',
     'object_tools',
-    'object_tools.tests',
+    'django.contrib.admin',
+    'object_tools.tests'
 ]
 
 ROOT_URLCONF = 'object_tools.tests.urls'

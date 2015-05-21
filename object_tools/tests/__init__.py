@@ -21,13 +21,16 @@ from object_tools.validation import validate
 class MockRequest():
     method = 'POST'
     POST = ()
+    FILES = ()
 
 
 class InitTestCase(TestCase):
     def test_autodiscover(self):
         autodiscover()
-        self.failUnless('object_tools.tests.tools' in sys.modules.keys(), \
-                'Autodiscover should import tool modules from installed apps.')
+        self.failUnless(
+            'object_tools.tests.tools' in sys.modules.keys(),
+            'Autodiscover should import tool modules from installed apps.'
+        )
 
 
 class ValidateTestCase(TestCase):
@@ -36,35 +39,42 @@ class ValidateTestCase(TestCase):
     """
     def test_validation(self):
         # Fail without 'name' member.
-        self.failUnlessRaises(ImproperlyConfigured, validate, \
-                TestInvalidTool, User)
+        self.failUnlessRaises(
+            ImproperlyConfigured, validate, TestInvalidTool, User
+        )
         try:
             validate(TestInvalidTool, User)
         except ImproperlyConfigured, e:
-            self.failUnlessEqual(e.message, \
-                    "No 'name' attribute found for tool TestInvalidTool.")
+            self.failUnlessEqual(
+                e.message, "No 'name' attribute found for tool TestInvalidTool."
+            )
 
         TestInvalidTool.name = 'test_invalid_tool'
 
         # Fail without 'label' member.
-        self.failUnlessRaises(ImproperlyConfigured, validate, \
-                TestInvalidTool, User)
+        self.failUnlessRaises(
+            ImproperlyConfigured, validate, TestInvalidTool, User
+        )
         try:
             validate(TestInvalidTool, User)
         except ImproperlyConfigured, e:
-            self.failUnlessEqual(e.message, \
-                    "No 'label' attribute found for tool TestInvalidTool.")
+            self.failUnlessEqual(
+                e.message,
+                "No 'label' attribute found for tool TestInvalidTool."
+            )
 
         TestInvalidTool.label = 'Test Invalid Tool'
 
         # Fail without 'view' member.
-        self.failUnlessRaises(NotImplementedError, validate, TestInvalidTool, \
-                User)
+        self.failUnlessRaises(
+            NotImplementedError, validate, TestInvalidTool, User
+        )
         try:
             validate(TestInvalidTool, User)
         except NotImplementedError, e:
-            self.failUnlessEqual(e.message, \
-                    "'view' method not implemented for tool TestInvalidTool.")
+            self.failUnlessEqual(
+                e.message, "No 'view' method found for tool TestInvalidTool."
+            )
 
 
 class ObjectToolsInclusionTagsTestCase(TestCase):
@@ -142,7 +152,6 @@ class ObjectToolsTestCase(TestCase):
         tools.register(TestTool)
         urls = tools.urls
         self.failUnlessEqual(len(urls[0]), 6)
-        print [url.url_patterns[0].__repr__() for url in urls[0]]
         for url in urls[0]:
             self.failUnless(url.url_patterns[0].__repr__() in [
                 '<RegexURLPattern sessions_session_test_tool ^test_tool/$>',
@@ -234,11 +243,14 @@ to how admin does, except pointing to the particular tool.")
         urls = tool.urls
         self.failUnlessEqual(len(urls), 1, 'urls property should only \
                 return 1 url')
-        self.failUnlessEqual(urls[0].__repr__(),
-            '<RegexURLPattern auth_user_test_tool ^test_tool/$>')
-        self.failUnlessEqual(urls[0].name, 'auth_user_test_tool',
-            'URL should be named as "<app_label>_<module_name>_<tool_name>\
-                ".')
+        self.failUnlessEqual(
+            urls[0].__repr__(),
+            '<RegexURLPattern auth_user_test_tool ^test_tool/$>'
+        )
+        self.failUnlessEqual(
+            urls[0].name, 'auth_user_test_tool',
+            'URL should be named as "<app_label>_<module_name>_<tool_name>".'
+        )
 
     def test_view(self):
         # Should raise permission denied on anonymous user.
