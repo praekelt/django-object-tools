@@ -1,5 +1,4 @@
 import django
-from object_tools.options import ObjectTool
 from object_tools.sites import tools
 
 
