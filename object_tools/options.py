@@ -82,16 +82,26 @@ class ObjectTool(object):
         return media
 
     def reverse(self):
-        info = self.model._meta.app_label, self.model._meta.module_name, \
-            self.name
+        info = (self.model._meta.app_label,)
+        # to keep backward (Django <= 1.7) compatibility
+        try:
+            info += (self.model._meta.model_name,)
+        except AttributeError:
+            info += (self.model._meta.module_name,)
+        info += (self.name,)
         return reverse('object-tools:%s_%s_%s' % info)
 
     def _urls(self):
         """
         URL patterns for tool linked to _view method.
         """
-        info = self.model._meta.app_label, self.model._meta.module_name, \
-            self.name
+        info = (self.model._meta.app_label,)
+        # to keep backward (Django <= 1.7) compatibility
+        try:
+            info += (self.model._meta.model_name,)
+        except AttributeError:
+            info += (self.model._meta.module_name,)
+        info += (self.name,)
         urlpatterns = patterns(
             '', url(r'^%s/$' % self.name, self._view, name='%s_%s_%s' % info),
         )
