@@ -1,8 +1,13 @@
 from django.apps import config
 
 
-class ObjectToolsAppConfig(config.AppConfig):
+class SimpleObjectToolsAppConfig(config.AppConfig):
+    """Simple AppConfig which does not do automatic discovery."""
     name = "object_tools"
 
+
+class ObjectToolsAppConfig(SimpleObjectToolsAppConfig):
+    """The default AppConfig for object_tools which does autodiscovery."""
     def ready(self):
-        pass
+        super(ObjectToolsAppConfig, self).ready()
+        self.module.autodiscover()
