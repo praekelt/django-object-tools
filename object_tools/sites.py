@@ -69,9 +69,13 @@ class ObjectTools(object):
         # Add in each object_tool's views.
         for model, object_tools in self._registry.iteritems():
             for object_tool in object_tools:
+                try:
+                    model_name = model._meta.module_name
+                except AttributeError:
+                    model_name = model._meta.model_name 
                 urlpatterns += patterns('',
                     url(r'^%s/%s/' % (model._meta.app_label,
-                        model._meta.module_name),
+                        model_name),
                         include(object_tool.urls))
                 )
 
