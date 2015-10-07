@@ -249,7 +249,7 @@ to how admin does, except pointing to the particular tool.")
         )
         self.failUnlessEqual(
             urls[0].name, 'auth_user_test_tool',
-            'URL should be named as "<app_label>_<module_name>_<tool_name>".'
+            'URL should be named as "<app_label>_<model_name>_<tool_name>".'
         )
 
     def test_view(self):

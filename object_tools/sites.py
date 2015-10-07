@@ -39,7 +39,7 @@ class ObjectTools(object):
         if object_tool_class and settings.DEBUG:
             from object_tools.validation import validate
             validate(object_tool_class, model_class)
-            #= lambda model, adminclass: None
+            # = lambda model, adminclass: None
 
         if not model_class:
             models = get_models()
@@ -68,13 +68,18 @@ class ObjectTools(object):
 
         # Add in each object_tool's views.
         for model, object_tools in self._registry.iteritems():
+            # to keep backward (Django <= 1.7) compatibility
+            info = (model._meta.app_label,)
+            try:
+                info += (model._meta.model_name,)
+            except AttributeError:
+                info += (model._meta.module_name,)
+
             for object_tool in object_tools:
                 urlpatterns += patterns('',
-                    url(r'^%s/%s/' % (model._meta.app_label,
-                        model._meta.module_name),
-                        include(object_tool.urls))
-                )
-
+                                        url(r'^%s/%s/' % info,
+                                            include(object_tool.urls))
+                               )
         return urlpatterns
 
     @property

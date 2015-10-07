@@ -1,10 +1,9 @@
-default_app_config = 'object_tools.apps.ObjectToolsAppConfig'
-
+import django
 from object_tools.options import ObjectTool
 from object_tools.sites import tools
 
 
-def autodiscover():
+def old_autodiscover():
     """
     Auto-discover INSTALLED_APPS tools.py modules and fail silently when
     not present. This forces an import on them to register any object
@@ -25,3 +24,13 @@ def autodiscover():
             # attempting to import it, otherwise we want it to bubble up.
             if module_has_submodule(mod, 'tools'):
                 raise
+
+
+def autodiscover():
+    if django.VERSION < (1, 7):
+        old_autodiscover()
+    else:
+        from django.utils.module_loading import autodiscover_modules
+        autodiscover_modules('tools', register_to=tools)
+
+default_app_config = 'object_tools.apps.ObjectToolsAppConfig'
