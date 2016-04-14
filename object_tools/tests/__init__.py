@@ -2,8 +2,20 @@ import sys
 from unittest import TestCase
 
 from django import template
-from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
+
+try:
+    from django.core.exceptions import AppRegistryNotReady
+except ImportError:
+    pass
+
+from django.conf import settings
+try:
+    from django.contrib.auth.models import User
+except AppRegistryNotReady:
+    from django.contrib.auth import get_user_model
+    User = settings.AUTH_USER_MODEL
+
 from django.template import Template
 
 try:

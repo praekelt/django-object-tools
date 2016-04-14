@@ -11,3 +11,5 @@ lib/
 /docs/_build
 coverage.xml
 pep8.txt
+.coverage
+.eggs/
