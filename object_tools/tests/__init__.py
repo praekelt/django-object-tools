@@ -14,7 +14,8 @@ try:
     from django.contrib.auth.models import User
 except AppRegistryNotReady:
     from django.contrib.auth import get_user_model
-    User = settings.AUTH_USER_MODEL
+    #User = settings.AUTH_USER_MODEL
+    User = get_user_model()
 
 from django.template import Template
 
