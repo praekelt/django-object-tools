@@ -89,7 +89,10 @@ class ObjectTool(object):
         except AttributeError:
             info += (self.model._meta.module_name,)
         info += (self.name,)
-        return reverse('object-tools:%s_%s_%s' % info)
+        s = ('object-tools:%s_%s_%s' % info)
+        print str(s)
+        return reverse(s)
+        #return reverse('object-tools:%s_%s_%s' % info)
 
     def _urls(self):
         """
