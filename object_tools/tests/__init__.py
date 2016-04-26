@@ -2,19 +2,6 @@ import sys
 from unittest import TestCase
 
 from django import template
-
-#from django.contrib.auth.models import User
-'''
-try:
-    from django.core.exceptions import AppRegistryNotReady
-except ImportError:
-    pass
-try:
-    from django.contrib.auth.models import User
-except AppRegistryNotReady:
-    from django.contrib.auth import get_user_model
-    User = get_user_model()
-'''
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.template import Template
 
@@ -22,6 +9,11 @@ try:
     from django.test.client import RequestFactory
 except ImportError:
     from snippetscream import RequestFactory
+
+
+# Since this module gets imported in the application's root package, it cannot
+# import models from other applications at the module level.  That means User
+# is imported in each test class.
 
 from object_tools import autodiscover
 from object_tools.options import ObjectTool
@@ -49,15 +41,19 @@ class ValidateTestCase(TestCase):
     """
     Testcase testing object_tools.validation ObjectTool validation.
     """
-    def test_validation(self):
-        from django.contrib.auth.models import User
 
+    @classmethod
+    def setUpClass(cls):
+        from django.contrib.auth.models import User
+        cls.user_klass = User
+
+    def test_validation(self):
         # Fail without 'name' member.
         self.failUnlessRaises(
-            ImproperlyConfigured, validate, TestInvalidTool, User
+            ImproperlyConfigured, validate, TestInvalidTool, self.user_klass
         )
         try:
-            validate(TestInvalidTool, User)
+            validate(TestInvalidTool, self.user_klass)
         except ImproperlyConfigured, e:
             self.failUnlessEqual(
                 e.message, "No 'name' attribute found for tool TestInvalidTool."
@@ -67,10 +63,10 @@ class ValidateTestCase(TestCase):
 
         # Fail without 'label' member.
         self.failUnlessRaises(
-            ImproperlyConfigured, validate, TestInvalidTool, User
+            ImproperlyConfigured, validate, TestInvalidTool, self.user_klass
         )
         try:
-            validate(TestInvalidTool, User)
+            validate(TestInvalidTool, self.user_klass)
         except ImproperlyConfigured, e:
             self.failUnlessEqual(
                 e.message,
@@ -81,10 +77,10 @@ class ValidateTestCase(TestCase):
 
         # Fail without 'view' member.
         self.failUnlessRaises(
-            NotImplementedError, validate, TestInvalidTool, User
+            NotImplementedError, validate, TestInvalidTool, self.user_klass
         )
         try:
-            validate(TestInvalidTool, User)
+            validate(TestInvalidTool, self.user_klass)
         except NotImplementedError, e:
             self.failUnlessEqual(
                 e.message, "No 'view' method found for tool TestInvalidTool."
@@ -95,18 +91,22 @@ class ObjectToolsInclusionTagsTestCase(TestCase):
     """
     Testcase for object_tools.templatetags.object_tools_inclusion_tags.
     """
-    def setUp(self):
+
+    @classmethod
+    def setUpClass(cls):
         from django.contrib.auth.models import User
+        cls.user_klass = User
+
+    def setUp(self):
         self.factory = RequestFactory()
-        self.user = User.objects.create_user(username='test_user')
+        self.user = self.user_klass.objects.create_user(username='test_user')
 
     def test_object_tools(self):
-        from django.contrib.auth.models import User
         autodiscover()
         request = self.factory.get('/')
         request.user = self.user
         context = template.Context({
-            'model': User,
+            'model': self.user_klass,
             'request': request,
         })
         t = Template("{% load object_tools_inclusion_tags %}{% object_tools \
@@ -118,7 +118,7 @@ class ObjectToolsInclusionTagsTestCase(TestCase):
         self.failUnlessEqual(result, expected_result)
 
         # User without permissions should not have any tools.
-        user = User()
+        user = self.user_klass()
         user.save()
         context['request'].user = user
         result = t.render(context)
@@ -183,22 +183,25 @@ class ObjectToolTestCase(TestCase):
     """
     Testcase for object_tools.options.ObjectTool.
     """
-    def setUp(self):
+
+    @classmethod
+    def setUpClass(cls):
         from django.contrib.auth.models import User
+        cls.user_klass = User
+
+    def setUp(self):
         self.factory = RequestFactory()
-        self.user = User.objects.create_user(username='test_user')
+        self.user = self.user_klass.objects.create_user(username='test_user')
 
     def test_init(self):
-        from django.contrib.auth.models import User
-        tool = ObjectTool(User)
-        self.failUnless(tool.model == User, 'Object Tool should have \
+        tool = ObjectTool(self.user_klass)
+        self.failUnless(tool.model == self.user_klass, 'Object Tool should have \
                 self.model set on init.')
 
     def test_construct_context(self):
-        from django.contrib.auth.models import User
         request = self.factory.get('/')
         request.user = self.user
-        tool = TestTool(User)
+        tool = TestTool(self.user_klass)
         context = tool.construct_context(request)
 
         # Do a very basic check to see if values are in fact constructed.
@@ -206,14 +209,12 @@ class ObjectToolTestCase(TestCase):
             self.failUnless(value)
 
     def test_construct_form(self):
-        from django.contrib.auth.models import User
-        tool = ObjectTool(User)
-        tool = TestTool(User)
+        tool = ObjectTool(self.user_klass)
+        tool = TestTool(self.user_klass)
         tool.construct_form(MockRequest())
 
     def test_media(self):
-        from django.contrib.auth.models import User
-        tool = TestTool(User)
+        tool = TestTool(self.user_klass)
         form = tool.construct_form(MockRequest())
         media = tool.media(form)
 
@@ -228,7 +229,7 @@ RelatedObjectLookups.js"></script>', u'<script type=\
 "/static/admin/js/jquery.init.js"></script>'
         ], 'Media result should include default admin media.')
 
-        tool = TestMediaTool(User)
+        tool = TestMediaTool(self.user_klass)
         form = tool.construct_form(MockRequest())
         media = tool.media(form)
 
@@ -249,20 +250,18 @@ admin/DateTimeShortcuts.js"></script>'
         ])
 
     def test_reverse(self):
-        from django.contrib.auth.models import User
-        tool = TestTool(User)
+        tool = TestTool(self.user_klass)
         self.failUnlessEqual(tool.reverse(), '/object-tools/auth/user/\
 test_tool/', "Tool url reverse should reverse similar to \
 how admin does, except pointing to the particular tool.")
 
-        tool = TestMediaTool(User)
+        tool = TestMediaTool(self.user_klass)
         self.failUnlessEqual(tool.reverse(), '/object-tools/auth/user/\
 test_media_tool/', "Tool url reverse should reverse similar \
 to how admin does, except pointing to the particular tool.")
 
     def test_urls(self):
-        from django.contrib.auth.models import User
-        tool = TestTool(User)
+        tool = TestTool(self.user_klass)
         urls = tool.urls
         self.failUnlessEqual(len(urls), 1, 'urls property should only \
                 return 1 url')
@@ -277,10 +276,9 @@ to how admin does, except pointing to the particular tool.")
 
     def test_view(self):
         # Should raise permission denied on anonymous user.
-        from django.contrib.auth.models import User
         request = self.factory.get('/')
         request.user = self.user
-        tool = TestTool(User)
+        tool = TestTool(self.user_klass)
         self.failUnlessRaises(PermissionDenied, tool._view, request)
 
         # Should raise permission denied for user without permissions.
