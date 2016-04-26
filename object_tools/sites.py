@@ -1,6 +1,11 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from django.db.models import get_models
+import pdb;pdb.set_trace()
+try:
+    from django.apps import apps
+    get_models = apps.get_models
+except ImportError:
+    from django.db.models import get_models
 
 
 class AlreadyRegistered(Exception):
