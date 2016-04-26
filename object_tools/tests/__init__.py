@@ -3,7 +3,8 @@ from unittest import TestCase
 
 from django import template
 
-from django.conf import settings
+#from django.contrib.auth.models import User
+'''
 try:
     from django.core.exceptions import AppRegistryNotReady
 except ImportError:
@@ -12,8 +13,8 @@ try:
     from django.contrib.auth.models import User
 except AppRegistryNotReady:
     from django.contrib.auth import get_user_model
-    User = settings.AUTH_USER_MODEL
-
+    User = get_user_model()
+'''
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.template import Template
 
@@ -49,6 +50,8 @@ class ValidateTestCase(TestCase):
     Testcase testing object_tools.validation ObjectTool validation.
     """
     def test_validation(self):
+        from django.contrib.auth.models import User
+
         # Fail without 'name' member.
         self.failUnlessRaises(
             ImproperlyConfigured, validate, TestInvalidTool, User
@@ -93,10 +96,12 @@ class ObjectToolsInclusionTagsTestCase(TestCase):
     Testcase for object_tools.templatetags.object_tools_inclusion_tags.
     """
     def setUp(self):
+        from django.contrib.auth.models import User
         self.factory = RequestFactory()
         self.user = User.objects.create_user(username='test_user')
 
     def test_object_tools(self):
+        from django.contrib.auth.models import User
         autodiscover()
         request = self.factory.get('/')
         request.user = self.user
@@ -179,15 +184,18 @@ class ObjectToolTestCase(TestCase):
     Testcase for object_tools.options.ObjectTool.
     """
     def setUp(self):
+        from django.contrib.auth.models import User
         self.factory = RequestFactory()
         self.user = User.objects.create_user(username='test_user')
 
     def test_init(self):
+        from django.contrib.auth.models import User
         tool = ObjectTool(User)
         self.failUnless(tool.model == User, 'Object Tool should have \
                 self.model set on init.')
 
     def test_construct_context(self):
+        from django.contrib.auth.models import User
         request = self.factory.get('/')
         request.user = self.user
         tool = TestTool(User)
@@ -198,11 +206,13 @@ class ObjectToolTestCase(TestCase):
             self.failUnless(value)
 
     def test_construct_form(self):
+        from django.contrib.auth.models import User
         tool = ObjectTool(User)
         tool = TestTool(User)
         tool.construct_form(MockRequest())
 
     def test_media(self):
+        from django.contrib.auth.models import User
         tool = TestTool(User)
         form = tool.construct_form(MockRequest())
         media = tool.media(form)
@@ -239,6 +249,7 @@ admin/DateTimeShortcuts.js"></script>'
         ])
 
     def test_reverse(self):
+        from django.contrib.auth.models import User
         tool = TestTool(User)
         self.failUnlessEqual(tool.reverse(), '/object-tools/auth/user/\
 test_tool/', "Tool url reverse should reverse similar to \
@@ -250,6 +261,7 @@ test_media_tool/', "Tool url reverse should reverse similar \
 to how admin does, except pointing to the particular tool.")
 
     def test_urls(self):
+        from django.contrib.auth.models import User
         tool = TestTool(User)
         urls = tool.urls
         self.failUnlessEqual(len(urls), 1, 'urls property should only \
@@ -265,6 +277,7 @@ to how admin does, except pointing to the particular tool.")
 
     def test_view(self):
         # Should raise permission denied on anonymous user.
+        from django.contrib.auth.models import User
         request = self.factory.get('/')
         request.user = self.user
         tool = TestTool(User)

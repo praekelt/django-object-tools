@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-import pdb;pdb.set_trace()
 try:
     from django.apps import apps
     get_models = apps.get_models
