@@ -10,10 +10,8 @@ setup(
     url='http://github.com/praekelt/django-object-tools',
     packages=find_packages(),
     include_package_data=True,
-    test_suite="setuptest.setuptest.SetupTestSuite",
     tests_require=[
         'django-snippetscream',
-        'django-setuptest>=0.1',
     ],
     classifiers=[
         "Programming Language :: Python",
