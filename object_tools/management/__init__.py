@@ -1,3 +1,4 @@
+import django
 from django.contrib.auth import models as auth_app
 from django.db.models import signals
 
@@ -17,7 +18,10 @@ def _get_all_permissions(opts, tools):
     return perms
 
 
-def create_permissions(app, created_models, verbosity, **kwargs):
+from django.db import DEFAULT_DB_ALIAS
+#def create_permissions(app, created_models, verbosity=2, **kwargs):
+
+def _create_permissions(**kwargs):
     """
     Almost exactly the same as django.contrib.auth.management.__init__.py
     """
@@ -55,8 +59,20 @@ def create_permissions(app, created_models, verbosity, **kwargs):
             name=name,
             content_type=ctype
         )
-        if verbosity >= 2:
+        if kwargs.get("verbosity", 2) >= 2:
             print "Adding permission '%s'" % p
 
-signals.post_syncdb.connect(create_permissions,
-    dispatch_uid="object_tools.management.create_permissions")
+if django.VERSION >= (1, 7):
+    def create_permissions(app_config, verbosity=2, interactive=True, using=DEFAULT_DB_ALIAS, **kwargs):
+        return _create_permissions(verbosity=2, interactive=True, using=DEFAULT_DB_ALIAS, **kwargs)
+else:
+    def create_permissions(app, created_models, **kwargs):
+        return _create_permissions(**kwargs)
+
+
+if django.VERSION >= (1, 7):
+    signals.post_migrate.connect(create_permissions,
+        dispatch_uid="object_tools.management.create_permissions")
+else:
+    signals.post_syncdb.connect(create_permissions,
+        dispatch_uid="object_tools.management.create_permissions")
