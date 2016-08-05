@@ -80,9 +80,9 @@ class ObjectTools(object):
                 info += (model._meta.module_name,)
 
             for object_tool in object_tools:
-                urlpatterns += [
+                urlpatterns.append(
                     url(r'^%s/%s/' % info, include(object_tool.urls))
-                ]
+                )
         return urlpatterns
 
     @property
