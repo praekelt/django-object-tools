@@ -102,9 +102,10 @@ class ObjectTool(object):
         except AttributeError:
             info += (self.model._meta.module_name,)
         info += (self.name,)
-        urlpatterns = (
+        urlpatterns = [
+            '',
             url(r'^%s/$' % self.name, self._view, name='%s_%s_%s' % info),
-        )
+        ]
         return urlpatterns
     urls = property(_urls)
 
