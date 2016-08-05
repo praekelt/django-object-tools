@@ -68,7 +68,7 @@ class ObjectTools(object):
         except ImportError:
             from django.conf.urls import url, include
 
-        urlpatterns = []
+        urlpatterns = ['']
 
         # Add in each object_tool's views.
         for model, object_tools in self._registry.iteritems():
