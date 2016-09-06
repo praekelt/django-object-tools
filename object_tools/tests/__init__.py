@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import sys
 from unittest import TestCase
 
@@ -31,8 +33,8 @@ class MockRequest():
 class InitTestCase(TestCase):
     def test_autodiscover(self):
         autodiscover()
-        self.failUnless(
-            'object_tools.tests.tools' in sys.modules.keys(),
+        self.assertTrue(
+            'object_tools.tests.tools' in list(sys.modules.keys()),
             'Autodiscover should import tool modules from installed apps.'
         )
 
@@ -49,41 +51,44 @@ class ValidateTestCase(TestCase):
 
     def test_validation(self):
         # Fail without 'name' member.
-        self.failUnlessRaises(
+        self.assertRaises(
             ImproperlyConfigured, validate, TestInvalidTool, self.user_klass
         )
         try:
             validate(TestInvalidTool, self.user_klass)
-        except ImproperlyConfigured, e:
-            self.failUnlessEqual(
-                e.message, "No 'name' attribute found for tool TestInvalidTool."
+        except ImproperlyConfigured as e:
+            message = e.args[0]
+            self.assertEqual(
+                message, "No 'name' attribute found for tool TestInvalidTool."
             )
 
         TestInvalidTool.name = 'test_invalid_tool'
 
         # Fail without 'label' member.
-        self.failUnlessRaises(
+        self.assertRaises(
             ImproperlyConfigured, validate, TestInvalidTool, self.user_klass
         )
         try:
             validate(TestInvalidTool, self.user_klass)
-        except ImproperlyConfigured, e:
-            self.failUnlessEqual(
-                e.message,
+        except ImproperlyConfigured as e:
+            message = e.args[0]
+            self.assertEqual(
+                message,
                 "No 'label' attribute found for tool TestInvalidTool."
             )
 
         TestInvalidTool.label = 'Test Invalid Tool'
 
         # Fail without 'view' member.
-        self.failUnlessRaises(
+        self.assertRaises(
             NotImplementedError, validate, TestInvalidTool, self.user_klass
         )
         try:
             validate(TestInvalidTool, self.user_klass)
-        except NotImplementedError, e:
-            self.failUnlessEqual(
-                e.message, "No 'view' method found for tool TestInvalidTool."
+        except NotImplementedError as e:
+            message = e.args[0]
+            self.assertEqual(
+                message, "No 'view' method found for tool TestInvalidTool."
             )
 
 
@@ -115,7 +120,7 @@ class ObjectToolsInclusionTagsTestCase(TestCase):
         # Anon user should not have any tools.
         result = t.render(context)
         expected_result = '\n'
-        self.failUnlessEqual(result, expected_result)
+        self.assertEqual(result, expected_result)
 
         # User without permissions should not have any tools.
         user = self.user_klass()
@@ -123,17 +128,17 @@ class ObjectToolsInclusionTagsTestCase(TestCase):
         context['request'].user = user
         result = t.render(context)
         expected_result = '\n'
-        self.failUnlessEqual(result, expected_result)
+        self.assertEqual(result, expected_result)
 
         # Superuser should have tools.
         user.is_superuser = True
         user.save()
         result = t.render(context)
-        expected_result = u'\n<li><a href="/object-tools/auth/user/\
+        expected_result = '\n<li><a href="/object-tools/auth/user/\
 test_tool/?" title=""class="historylink">Test Tool</a></li>\n\n\
 <li><a href="/object-tools/auth/user/test_media_tool/?" title=""\
 class="historylink"></a></li>\n\n'
-        self.failUnlessEqual(result, expected_result)
+        self.assertEqual(result, expected_result)
 
     def tearDown(self):
         self.user.delete()
@@ -146,9 +151,9 @@ class ObjectToolsTestCase(TestCase):
     def test__init(self):
         # Check init results in expected members.
         tools = ObjectTools()
-        self.failUnlessEqual(tools.name, 'object-tools')
-        self.failUnlessEqual(tools.app_name, 'object-tools')
-        self.failUnlessEqual(tools._registry, {})
+        self.assertEqual(tools.name, 'object-tools')
+        self.assertEqual(tools.app_name, 'object-tools')
+        self.assertEqual(tools._registry, {})
 
     def test_register(self):
         # Set DEBUG = True so validation is triggered.
@@ -162,14 +167,14 @@ class ObjectToolsTestCase(TestCase):
         tools = ObjectTools()
         # Without any tools should be empty list, namespaces
         # should be 'object-tools'.
-        self.failUnlessEqual(tools.urls, ([], 'object-tools', 'object-tools'))
+        self.assertEqual(tools.urls, ([], 'object-tools', 'object-tools'))
 
         # With a tool registered, urls should include it for each model.
         tools.register(TestTool)
         urls = tools.urls
-        self.failUnlessEqual(len(urls[0]), 6)
+        self.assertEqual(len(urls[0]), 6)
         for url in urls[0]:
-            self.failUnless(url.url_patterns[0].__repr__() in [
+            self.assertTrue(url.url_patterns[0].__repr__() in [
                 '<RegexURLPattern sessions_session_test_tool ^test_tool/$>',
                 '<RegexURLPattern auth_user_test_tool ^test_tool/$>',
                 '<RegexURLPattern auth_group_test_tool ^test_tool/$>',
@@ -195,7 +200,7 @@ class ObjectToolTestCase(TestCase):
 
     def test_init(self):
         tool = ObjectTool(self.user_klass)
-        self.failUnless(tool.model == self.user_klass, 'Object Tool should have \
+        self.assertTrue(tool.model == self.user_klass, 'Object Tool should have \
                 self.model set on init.')
 
     def test_construct_context(self):
@@ -205,8 +210,8 @@ class ObjectToolTestCase(TestCase):
         context = tool.construct_context(request)
 
         # Do a very basic check to see if values are in fact constructed.
-        for key, value in context.iteritems():
-            self.failUnless(value)
+        for key, value in context.items():
+            self.assertTrue(value)
 
     def test_construct_form(self):
         tool = ObjectTool(self.user_klass)
@@ -219,13 +224,13 @@ class ObjectToolTestCase(TestCase):
         media = tool.media(form)
 
         # Media result should include default admin media.
-        self.failUnlessEqual(media.render_js(), [
-            u'<script type="\
+        self.assertEqual(media.render_js(), [
+            '<script type="\
 text/javascript" src="/static/admin/js/core.js"></script>',
-            u'<script type="text/javascript" src="/static/admin/js/admin/\
-RelatedObjectLookups.js"></script>', u'<script type=\
+            '<script type="text/javascript" src="/static/admin/js/admin/\
+RelatedObjectLookups.js"></script>', '<script type=\
 "text/javascript" src="/static/admin/js/jquery.min.js">\
-</script>', u'<script type="text/javascript" src=\
+</script>', '<script type="text/javascript" src=\
 "/static/admin/js/jquery.init.js"></script>'
         ], 'Media result should include default admin media.')
 
@@ -234,42 +239,42 @@ RelatedObjectLookups.js"></script>', u'<script type=\
         media = tool.media(form)
 
         #Media result should also include field specific media.
-        self.failUnlessEqual(media.render_js(), [
-            u'<script type="text/javascript" src="/static/admin/js/\
+        self.assertEqual(media.render_js(), [
+            '<script type="text/javascript" src="/static/admin/js/\
 core.js"></script>',
-            u'<script type="text/javascript" src="/static/admin/js/\
+            '<script type="text/javascript" src="/static/admin/js/\
 admin/RelatedObjectLookups.js"></script>',
-            u'<script type="text/javascript" src="/static/admin/js/\
+            '<script type="text/javascript" src="/static/admin/js/\
 jquery.min.js"></script>',
-            u'<script type="text/javascript" src="/static/admin/js/\
+            '<script type="text/javascript" src="/static/admin/js/\
 jquery.init.js"></script>',
-            u'<script type="text/javascript" src="/static/admin/js/\
+            '<script type="text/javascript" src="/static/admin/js/\
 calendar.js"></script>',
-            u'<script type="text/javascript" src="/static/admin/js/\
+            '<script type="text/javascript" src="/static/admin/js/\
 admin/DateTimeShortcuts.js"></script>'
         ])
 
     def test_reverse(self):
         tool = TestTool(self.user_klass)
-        self.failUnlessEqual(tool.reverse(), '/object-tools/auth/user/\
+        self.assertEqual(tool.reverse(), '/object-tools/auth/user/\
 test_tool/', "Tool url reverse should reverse similar to \
 how admin does, except pointing to the particular tool.")
 
         tool = TestMediaTool(self.user_klass)
-        self.failUnlessEqual(tool.reverse(), '/object-tools/auth/user/\
+        self.assertEqual(tool.reverse(), '/object-tools/auth/user/\
 test_media_tool/', "Tool url reverse should reverse similar \
 to how admin does, except pointing to the particular tool.")
 
     def test_urls(self):
         tool = TestTool(self.user_klass)
         urls = tool.urls
-        self.failUnlessEqual(len(urls), 1, 'urls property should only \
+        self.assertEqual(len(urls), 1, 'urls property should only \
                 return 1 url')
-        self.failUnlessEqual(
+        self.assertEqual(
             urls[0].__repr__(),
             '<RegexURLPattern auth_user_test_tool ^test_tool/$>'
         )
-        self.failUnlessEqual(
+        self.assertEqual(
             urls[0].name, 'auth_user_test_tool',
             'URL should be named as "<app_label>_<model_name>_<tool_name>".'
         )
@@ -279,10 +284,10 @@ to how admin does, except pointing to the particular tool.")
         request = self.factory.get('/')
         request.user = self.user
         tool = TestTool(self.user_klass)
-        self.failUnlessRaises(PermissionDenied, tool._view, request)
+        self.assertRaises(PermissionDenied, tool._view, request)
 
         # Should raise permission denied for user without permissions.
-        self.failUnlessRaises(PermissionDenied, tool._view, request)
+        self.assertRaises(PermissionDenied, tool._view, request)
 
         # Should not raise permission denied for super user.
         request.user.is_superuser = True

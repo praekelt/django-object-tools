@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django import forms
 from django.conf import settings
 try:
@@ -53,7 +55,7 @@ class ObjectTool(object):
         return form
 
     def get_permission(self):
-        return u'%s_%s' % (self.name, self.model._meta.object_name.lower())
+        return '%s_%s' % (self.name, self.model._meta.object_name.lower())
 
     def has_permission(self, user):
         """
@@ -76,7 +78,7 @@ class ObjectTool(object):
         )
 
         if form:
-            for name, field in form.fields.iteritems():
+            for name, field in form.fields.items():
                 media = media + field.widget.media
 
         return media
