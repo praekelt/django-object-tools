@@ -22,3 +22,11 @@ INSTALLED_APPS = [
 
 ROOT_URLCONF = 'object_tools.tests.urls'
 STATIC_URL = '/static/'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+    }
+]
