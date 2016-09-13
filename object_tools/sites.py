@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 try:
@@ -64,14 +66,14 @@ class ObjectTools(object):
 
     def get_urls(self):
         try:
-            from django.conf.urls.defaults import patterns, url, include
+            from django.conf.urls.defaults import url, include
         except ImportError:
-            from django.conf.urls import patterns, url, include
+            from django.conf.urls import url, include
 
-        urlpatterns = patterns('',)
+        urlpatterns = []
 
         # Add in each object_tool's views.
-        for model, object_tools in self._registry.iteritems():
+        for model, object_tools in self._registry.items():
             # to keep backward (Django <= 1.7) compatibility
             info = (model._meta.app_label,)
             try:
@@ -80,10 +82,9 @@ class ObjectTools(object):
                 info += (model._meta.module_name,)
 
             for object_tool in object_tools:
-                urlpatterns += patterns('',
-                                        url(r'^%s/%s/' % info,
-                                            include(object_tool.urls))
-                               )
+                urlpatterns.append(
+                    url(r'^%s/%s/' % info, include(object_tool.urls))
+                )
         return urlpatterns
 
     @property

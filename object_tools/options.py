@@ -1,9 +1,11 @@
+from __future__ import unicode_literals
+
 from django import forms
 from django.conf import settings
 try:
-    from django.conf.urls.defaults import patterns, url
+    from django.conf.urls.defaults import url
 except ImportError:
-    from django.conf.urls import patterns, url
+    from django.conf.urls import url
 from django.contrib.admin import helpers
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
@@ -53,7 +55,7 @@ class ObjectTool(object):
         return form
 
     def get_permission(self):
-        return u'%s_%s' % (self.name, self.model._meta.object_name.lower())
+        return '%s_%s' % (self.name, self.model._meta.object_name.lower())
 
     def has_permission(self, user):
         """
@@ -76,7 +78,7 @@ class ObjectTool(object):
         )
 
         if form:
-            for name, field in form.fields.iteritems():
+            for name, field in form.fields.items():
                 media = media + field.widget.media
 
         return media
@@ -102,9 +104,9 @@ class ObjectTool(object):
         except AttributeError:
             info += (self.model._meta.module_name,)
         info += (self.name,)
-        urlpatterns = patterns(
-            '', url(r'^%s/$' % self.name, self._view, name='%s_%s_%s' % info),
-        )
+        urlpatterns = [
+            url(r'^%s/$' % self.name, self._view, name='%s_%s_%s' % info)
+        ]
         return urlpatterns
     urls = property(_urls)
 

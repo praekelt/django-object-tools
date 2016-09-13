@@ -12,6 +12,10 @@ Django Object Tools
 
 This packages is part of the larger `Jmbo <http://www.jmbo.org>`_ project.
 
+Requirements
+------------
+* Django=>1.8
+
 Installation
 ------------
 #. Install or add ``django-object-tools`` to your python path.
@@ -24,15 +28,15 @@ Installation
 
     # urls.py
     from django.conf.urls.defaults import *
-
+    form  django.conf.urls import url
     import object_tools
 
     # you can skip this if you're using Django >= 1.7
     object_tools.autodiscover()
 
-    urlpatterns = patterns('',
-        (r'^object-tools/', include(object_tools.tools.urls)),
-    )
+    urlpatterns = [
+        url(r'^object-tools/', include(object_tools.tools.urls))
+    ]
 
 #. Obviously Django Admin itself needs to be installed, as described `here <https://docs.djangoproject.com/en/dev/ref/contrib/admin/>`_.
 

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import django
 from django.contrib.auth import models as auth_app
 from django.db.models import signals
@@ -6,14 +8,14 @@ import object_tools
 
 
 def _get_permission_codename(tool, opts):
-    return u'%s_%s' % (tool.name, opts.object_name.lower())
+    return '%s_%s' % (tool.name, opts.object_name.lower())
 
 
 def _get_all_permissions(opts, tools):
     "Returns (codename, name) for all tools."
     perms = []
     for tool in tools:
-        perms.append((_get_permission_codename(tool, opts), u'Can %s %s' % \
+        perms.append((_get_permission_codename(tool, opts), 'Can %s %s' % \
                 (tool.name, opts.verbose_name_plural)))
     return perms
 
@@ -35,7 +37,7 @@ def _create_permissions(**kwargs):
     searched_perms = list()
     # The codenames and ctypes that should exist.
     ctypes = set()
-    for model, tools in tools.iteritems():
+    for model, tools in tools.items():
         ctype = ContentType.objects.get_for_model(model)
         ctypes.add(ctype)
         for perm in _get_all_permissions(model._meta, tools):
@@ -60,7 +62,7 @@ def _create_permissions(**kwargs):
             content_type=ctype
         )
         if kwargs.get("verbosity", 2) >= 2:
-            print "Adding permission '%s'" % p
+            print("Adding permission '%s'" % p)
 
 if django.VERSION >= (1, 7):
     def create_permissions(app_config, verbosity=2, interactive=True, using=DEFAULT_DB_ALIAS, **kwargs):
