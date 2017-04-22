@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 try:
@@ -71,7 +73,7 @@ class ObjectTools(object):
         urlpatterns = []
 
         # Add in each object_tool's views.
-        for model, object_tools in self._registry.iteritems():
+        for model, object_tools in self._registry.items():
             # to keep backward (Django <= 1.7) compatibility
             info = (model._meta.app_label,)
             try:
