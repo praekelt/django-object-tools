@@ -4,14 +4,13 @@ install:
 script:
   - tox
 env:
-  matrix:
-    - TOXENV=django14-py27
-    - TOXENV=django15-py27
-    - TOXENV=django16-py27
-    - TOXENV=django17-py27
-    - TOXENV=django18-py27
-    - TOXENV=django18-py3
-    - TOXENV=django19-py27
-    - TOXENV=django19-py3
-    - TOXENV=django110-py27
-    - TOXENV=django110-py3
+  - TOXENV=django14-py27
+  - TOXENV=django15-py27
+  - TOXENV=django16-py27
+  - TOXENV=django17-py27
+  - TOXENV=django18-py27
+  - TOXENV=django18-py3
+  - TOXENV=django19-py27
+  - TOXENV=django19-py3
+  - TOXENV=django110-py27
+  - TOXENV=django110-py3
