@@ -12,4 +12,7 @@ class ChangeListViewTestCase(TestCase):
 
     def test_tool_is_rendered(self):
         response = self.client.get("/admin/auth/user/")
+        tool_html = '<li><a href="/object-tools/auth/user/test_tool/?"' \
+                    ' title=""class="historylink">Test Tool</a></li>'
+        self.assertContains(response, tool_html)
         self.assertEqual(response.status_code, 200)
