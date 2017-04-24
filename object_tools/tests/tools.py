@@ -28,10 +28,10 @@ class TestTool(object_tools.ObjectTool):
 
 class TestMediaTool(object_tools.ObjectTool):
     name = 'test_media_tool'
-    label = ''
+    label = 'Test Media Tool'
     form_class = TestMediaForm
 
-    def view(self):
+    def view(self, request, extra_context=None):
         pass
 
 
