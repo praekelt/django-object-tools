@@ -46,6 +46,7 @@ except ImportError:
 
 if config:
     def ready(cls):
+        print "=========== in ready ================="
         object_tools.tools.register(TestTool)
         object_tools.tools.register(TestMediaTool)
     object_tools.apps.ObjectToolsAppConfig.ready = ready

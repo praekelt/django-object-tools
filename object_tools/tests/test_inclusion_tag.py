@@ -17,7 +17,6 @@ class ObjectToolsInclusionTagsTestCase(TestCase):
         tools.register(TestMediaTool, User)
 
     def test_object_tools(self):
-        # autodiscover()
         request = self.factory.get('/')
         request.user = self.user
         context = Context({
@@ -52,3 +51,4 @@ class="historylink">Test Media Tool</a></li>\n\n'
 
     def tearDown(self):
         self.user.delete()
+        tools._registry.clear()
