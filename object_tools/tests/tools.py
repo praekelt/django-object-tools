@@ -38,19 +38,5 @@ class TestMediaTool(object_tools.ObjectTool):
 class TestInvalidTool(object_tools.ObjectTool):
     pass
 
-
-try:
-    from django.apps import config
-except ImportError:
-    config = None
-
-if config:
-    def ready(cls):
-        print "=========== in ready ================="
-        object_tools.tools.register(TestTool)
-        object_tools.tools.register(TestMediaTool)
-    object_tools.apps.ObjectToolsAppConfig.ready = ready
-
-else:
-    object_tools.tools.register(TestTool)
-    object_tools.tools.register(TestMediaTool)
+object_tools.tools.register(TestTool)
+object_tools.tools.register(TestMediaTool)

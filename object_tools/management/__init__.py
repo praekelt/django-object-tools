@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
-import django
 from django.contrib.auth import models as auth_app
+from django.db import DEFAULT_DB_ALIAS
 from django.db.models import signals
 
 import object_tools
@@ -12,16 +12,13 @@ def _get_permission_codename(tool, opts):
 
 
 def _get_all_permissions(opts, tools):
-    "Returns (codename, name) for all tools."
+    """Returns (codename, name) for all tools."""
     perms = []
     for tool in tools:
         perms.append((_get_permission_codename(tool, opts), 'Can %s %s' % \
                 (tool.name, opts.verbose_name_plural)))
     return perms
 
-
-from django.db import DEFAULT_DB_ALIAS
-#def create_permissions(app, created_models, verbosity=2, **kwargs):
 
 def _create_permissions(**kwargs):
     """
@@ -64,17 +61,12 @@ def _create_permissions(**kwargs):
         if kwargs.get("verbosity", 2) >= 2:
             print("Adding permission '%s'" % p)
 
-if django.VERSION >= (1, 7):
-    def create_permissions(app_config, verbosity=2, interactive=True, using=DEFAULT_DB_ALIAS, **kwargs):
-        return _create_permissions(verbosity=2, interactive=True, using=DEFAULT_DB_ALIAS, **kwargs)
-else:
-    def create_permissions(app, created_models, **kwargs):
-        return _create_permissions(**kwargs)
+
+def create_permissions(app_config, verbosity=2, interactive=True, using=DEFAULT_DB_ALIAS, **kwargs):
+    return _create_permissions(verbosity=2, interactive=True, using=DEFAULT_DB_ALIAS, **kwargs)
 
 
-if django.VERSION >= (1, 7):
-    signals.post_migrate.connect(create_permissions,
-        dispatch_uid="object_tools.management.create_permissions")
-else:
-    signals.post_syncdb.connect(create_permissions,
-        dispatch_uid="object_tools.management.create_permissions")
+signals.post_migrate.connect(
+    create_permissions,
+    dispatch_uid="object_tools.management.create_permissions"
+)

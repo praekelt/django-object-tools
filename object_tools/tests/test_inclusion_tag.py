@@ -2,9 +2,6 @@ from django.contrib.auth.models import User
 from django.template import Template, Context
 from django.test import TestCase, RequestFactory
 
-from object_tools import tools
-from object_tools.tests.tools import TestMediaTool, TestTool
-
 
 class ObjectToolsInclusionTagsTestCase(TestCase):
     """
@@ -13,8 +10,6 @@ class ObjectToolsInclusionTagsTestCase(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.user = User.objects.create_user(username='test_user')
-        tools.register(TestTool, User)
-        tools.register(TestMediaTool, User)
 
     def test_object_tools(self):
         request = self.factory.get('/')
@@ -51,4 +46,3 @@ class="historylink">Test Media Tool</a></li>\n\n'
 
     def tearDown(self):
         self.user.delete()
-        tools._registry.clear()

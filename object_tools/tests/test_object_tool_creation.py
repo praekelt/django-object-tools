@@ -3,18 +3,13 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.test import TestCase
+from django.test.client import RequestFactory
 
-try:
-    from django.test.client import RequestFactory
-except ImportError:
-    from snippetscream import RequestFactory
-
-from object_tools import tools
 from object_tools.options import ObjectTool
 from object_tools.tests.tools import TestTool, TestMediaTool
 
 
-class MockRequest():
+class MockRequest(object):
     method = 'POST'
     POST = ()
     FILES = ()
@@ -27,8 +22,6 @@ class ObjectToolTestCase(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.user = User.objects.create_user(username='test_user')
-        tools.register(TestTool, User)
-        tools.register(TestMediaTool, User)
 
     def test_init(self):
         tool = ObjectTool(User)
@@ -40,8 +33,6 @@ class ObjectToolTestCase(TestCase):
     def test_construct_context(self):
         request = self.factory.get('/')
         request.user = self.user
-        tools.register(TestTool, User)
-        tools.register(TestMediaTool, User)
         tool = TestTool(User)
         context = tool.construct_context(request)
 
@@ -50,9 +41,9 @@ class ObjectToolTestCase(TestCase):
             self.assertTrue(value)
 
     def test_construct_form(self):
-        tool = ObjectTool(User)
         tool = TestTool(User)
-        tool.construct_form(MockRequest())
+        form = tool.construct_form(MockRequest())
+        self.assertTrue(isinstance(form, tool.form_class))
 
     def test_media(self):
         tool = TestTool(User)
@@ -74,7 +65,7 @@ RelatedObjectLookups.js"></script>', '<script type=\
         form = tool.construct_form(MockRequest())
         media = tool.media(form)
 
-        #Media result should also include field specific media.
+        # Media result should also include field specific media.
         self.assertEqual(media.render_js(), [
             '<script type="text/javascript" src="/static/admin/js/\
 core.js"></script>',
@@ -91,13 +82,11 @@ admin/DateTimeShortcuts.js"></script>'
         ])
 
     def test_reverse(self):
-        # tools.register(TestTool, User)
         tool = TestTool(User)
         self.assertEqual(tool.reverse(), '/object-tools/auth/user/\
 test_tool/', "Tool url reverse should reverse similar to \
 how admin does, except pointing to the particular tool.")
 
-        # tools.register(TestMediaTool, User)
         tool = TestMediaTool(User)
         self.assertEqual(tool.reverse(), '/object-tools/auth/user/\
 test_media_tool/', "Tool url reverse should reverse similar \
@@ -134,4 +123,3 @@ to how admin does, except pointing to the particular tool.")
 
     def tearDown(self):
         self.user.delete()
-        tools._registry.clear()
