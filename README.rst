@@ -14,7 +14,7 @@ This packages is part of the larger `Jmbo <http://www.jmbo.org>`_ project.
 
 Requirements
 ------------
-* Django=>1.8
+* Django=>1.9
 
 Installation
 ------------

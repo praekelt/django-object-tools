@@ -2,10 +2,7 @@ from __future__ import unicode_literals
 
 from django import forms
 from django.conf import settings
-try:
-    from django.conf.urls.defaults import url
-except ImportError:
-    from django.conf.urls import url
+from django.conf.urls import url
 from django.contrib.admin import helpers
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
@@ -97,13 +94,10 @@ class ObjectTool(object):
         """
         URL patterns for tool linked to _view method.
         """
-        info = (self.model._meta.app_label,)
-        # to keep backward (Django <= 1.7) compatibility
-        try:
-            info += (self.model._meta.model_name,)
-        except AttributeError:
-            info += (self.model._meta.module_name,)
-        info += (self.name,)
+        info = (
+            self.model._meta.app_label, self.model._meta.model_name,
+            self.name,
+        )
         urlpatterns = [
             url(r'^%s/$' % self.name, self._view, name='%s_%s_%s' % info)
         ]
