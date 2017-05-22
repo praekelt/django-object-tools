@@ -2,7 +2,7 @@
 AUTHORS
 =======
 
-Praekelt Foundation
+Praekelt Consulting
 -------------------
 
 * Shaun Sephton

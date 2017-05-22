@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.11
+----
+#. Django 1.11 compatibility.
+#. Deprecated support for versions below Django 1.9.
+
 1.9
 ---
 #. Django 1.9 compatibility.

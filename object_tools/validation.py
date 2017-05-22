@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.core.exceptions import ImproperlyConfigured
 
 __all__ = ['validate']
