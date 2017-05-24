@@ -5,7 +5,7 @@ Django Object Tools
 .. image:: https://travis-ci.org/praekelt/django-object-tools.svg
     :target: https://travis-ci.org/praekelt/django-object-tools
 
-.. image:: https://github.com/downloads/praekelt/django-object-tools/example-tools.png
+.. image:: docs/images/example-tools.png
 
 .. contents:: Contents
     :depth: 5
@@ -94,7 +94,7 @@ To enable the tool add ``delete`` to your ``INSTALLED_APPS`` setting.
 
 Now when you navigate to the change list view of any model you'll find the *delete all* object tool in the upper right hand corner.
 
-.. image:: https://github.com/downloads/praekelt/django-object-tools/delete-example-final.png
+.. image:: docs/images/delete-example-final.png
 
 Clicking on the *Delete all* tool fires off the view and proceeds with deleting objects as per usual.
 
