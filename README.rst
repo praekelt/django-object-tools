@@ -24,11 +24,13 @@ Installation
 
 #. Call object tool's ``autodiscover`` method. This works in a similar fashion as Django's admin; discovering which tools to render in admin. You can do this in any module that is called during initialization but we recommend doing it in ``urls.py``, as illustrated in the next point.
 
-#. Hook up URLConf. Do this by pointing a given URL at the ``tools.urls`` method. In this example, we register the default ``Tools`` instance ``object_tools.tools`` at the URL ``/object-tools/``::
+#. Hook up URLConf. Do this by pointing a given URL at the ``tools.urls`` method. In this example, we register the default ``Tools`` instance ``object_tools.tools`` at the URL ``/object-tools/``:
+
+   .. code-block:: python
 
     # urls.py
     from django.conf.urls.defaults import *
-    form  django.conf.urls import url
+    from  django.conf.urls import url
     import object_tools
 
     # you can skip this if you're using Django >= 1.7
@@ -55,7 +57,9 @@ Firstly create a Django app folder structure as per usual, with the root directo
         __init__.py
         tools.py
 
-Edit ``tools.py`` to look like this::
+Edit ``tools.py`` to look like this:
+
+.. code-block:: python
 
     from django.contrib.admin.actions import delete_selected
     import object_tools
