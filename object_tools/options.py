@@ -5,7 +5,10 @@ from django.conf import settings
 from django.conf.urls import url
 from django.contrib.admin import helpers
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
+try:
+    from django.urls import reverse
+except ImportError:  # Django<2.0
+    from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 
