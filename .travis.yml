@@ -4,11 +4,13 @@ matrix:
     include:
         - python: 2.7
           env: TOXENV=django111-py27
-        - python: 3
+        - python: 3.5
           env: TOXENV=django111-py3
-        - python: 3
+        - python: 3.5
           env: TOXENV=django20-py3
         - python: 3.7
+          dist: xenial
+          sudo: true
           env: TOXENV=django21-py3.7
 
 install:
