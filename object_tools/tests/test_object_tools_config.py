@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import sys
 
+import django
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
@@ -105,12 +106,25 @@ class ObjectToolsTestCase(TestCase):
         tools.register(TestTool)
         urls = tools.urls
         self.assertEqual(len(urls[0]), 6)
-        for url in urls[0]:
-            self.assertTrue(url.url_patterns[0].__repr__() in [
+
+        if django.VERSION >= (2, 0):
+            urlpatterns = [
+                "<URLPattern '^test_tool/$' [name='sessions_session_test_tool']>",
+                "<URLPattern '^test_tool/$' [name='auth_user_test_tool']>",
+                "<URLPattern '^test_tool/$' [name='auth_group_test_tool']>",
+                "<URLPattern '^test_tool/$' [name='auth_permission_test_tool']>",
+                "<URLPattern '^test_tool/$' [name='contenttypes_contenttype_test_tool']>",
+                "<URLPattern '^test_tool/$' [name='admin_logentry_test_tool']>",
+            ]
+        else:
+            urlpatterns = [
                 '<RegexURLPattern sessions_session_test_tool ^test_tool/$>',
                 '<RegexURLPattern auth_user_test_tool ^test_tool/$>',
                 '<RegexURLPattern auth_group_test_tool ^test_tool/$>',
                 '<RegexURLPattern auth_permission_test_tool ^test_tool/$>',
                 '<RegexURLPattern contenttypes_contenttype_test_tool ^test_tool/$>',
                 '<RegexURLPattern admin_logentry_test_tool ^test_tool/$>'
-            ])
+            ]
+
+        for url in urls[0]:
+            self.assertTrue(url.url_patterns[0].__repr__() in urlpatterns)
