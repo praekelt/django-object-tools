@@ -1,6 +1,13 @@
 Changelog
 =========
 
+
+2.00
+----
+#. Django 2.0 & 2.1 compatibility.
+#. Added coveralls
+#. Deprecated support for versions below Django 1.11.
+
 1.11
 ----
 #. Django 1.11 compatibility.
