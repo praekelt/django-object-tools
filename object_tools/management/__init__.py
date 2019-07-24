@@ -63,7 +63,7 @@ def _create_permissions(**kwargs):
 
 
 def create_permissions(app_config, verbosity=2, interactive=True, using=DEFAULT_DB_ALIAS, **kwargs):
-    return _create_permissions(verbosity=2, interactive=True, using=DEFAULT_DB_ALIAS, **kwargs)
+    return _create_permissions(verbosity=verbosity, interactive=True, using=DEFAULT_DB_ALIAS, **kwargs)
 
 
 signals.post_migrate.connect(
