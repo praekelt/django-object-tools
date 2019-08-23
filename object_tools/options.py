@@ -9,8 +9,9 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 try:
     from django.urls import reverse
-except ImportError:  # Django<2.0
+except ImportError:
     from django.core.urlresolvers import reverse
+
 csrf_protect_m = method_decorator(csrf_protect)
 
 

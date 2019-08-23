@@ -5,24 +5,29 @@ Django Object Tools
 .. image:: https://travis-ci.org/praekelt/django-object-tools.svg
     :target: https://travis-ci.org/praekelt/django-object-tools
 
+.. image:: https://coveralls.io/repos/github/praekelt/django-object-tools/badge.svg?branch=develop
+    :target: https://coveralls.io/github/praekelt/django-object-tools?branch=develop
+
+.. image:: https://badge.fury.io/py/django-object-tools.svg
+    :target: https://badge.fury.io/py/django-object-tools
+
 .. image:: docs/images/example-tools.png
 
 .. contents:: Contents
     :depth: 5
 
-This packages is part of the larger `Jmbo <http://www.jmbo.org>`_ project.
-
 Requirements
 ------------
-* Django=>1.9
+
+#. Python 2.7, 3.5-3.7
+
+#. Django 1.11, 2.0, 2.1
 
 Installation
 ------------
 #. Install or add ``django-object-tools`` to your python path.
 
 #. Add ``object_tools`` to your ``INSTALLED_APPS`` setting. ``django-object-tools`` overrides certain admin templates so you have to add it **before** ``django.contrib.admin``.
-
-#. Call object tool's ``autodiscover`` method. This works in a similar fashion as Django's admin; discovering which tools to render in admin. You can do this in any module that is called during initialization but we recommend doing it in ``urls.py``, as illustrated in the next point.
 
 #. Hook up URLConf. Do this by pointing a given URL at the ``tools.urls`` method. In this example, we register the default ``Tools`` instance ``object_tools.tools`` at the URL ``/object-tools/``:
 
@@ -33,16 +38,13 @@ Installation
     from  django.conf.urls import url
     import object_tools
 
-    # you can skip this if you're using Django >= 1.7
-    object_tools.autodiscover()
-
     urlpatterns = [
-        url(r'^object-tools/', include(object_tools.tools.urls))
+        path('object-tools/', object_tools.tools.urls)
     ]
 
 #. Obviously Django Admin itself needs to be installed, as described `here <https://docs.djangoproject.com/en/dev/ref/contrib/admin/>`_.
 
-#. Remember to run ``syncdb`` whenever you install new tools to setup permissions.
+#. Remember to run ``migrate`` whenever you install new tools to setup permissions.
 
 Usage
 -----
@@ -62,6 +64,7 @@ Edit ``tools.py`` to look like this:
 .. code-block:: python
 
     from django.contrib.admin.actions import delete_selected
+    from django.contrib.admin.sites import site
     import object_tools
 
     class Delete(object_tools.ObjectTool):
@@ -70,11 +73,12 @@ Edit ``tools.py`` to look like this:
 
         def view(self, request, extra_context=None):
             queryset = self.model.objects.all()
-            response = delete_selected(self.modeladmin, request, queryset)
+            modeladmin = site._registry.get(self.model)
+            response = delete_selected(modeladmin, request, queryset)
             if response:
                 return response
             else:
-                return self.modeladmin.changelist_view(request)
+                return modeladmin.changelist_view(request)
 
     object_tools.tools.register(Delete)
 
