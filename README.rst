@@ -53,11 +53,17 @@ Usage
 
 As an example lets create a tool allowing you to delete all objects. Yes this is a bit convoluted but it's a good toy example for illustration purposes. Have a look at `django-export <http://pypi.python.org/pypi/django-export>`_ and `django-order <http://pypi.python.org/pypi/django-order>`_ for examples of real world tools leveraging ``django-object-tools``.
 
-Firstly create a Django app folder structure as per usual, with the root directory named ``delete``, including a file called ``tools.py``. It should look as follows::
+Firstly create a NEW Django app folder structure. 
+    
+    python manage.py startapp delete_app
+    
+    
+Create a directory named ``delete``, including a file called ``tools.py`` inside the ``delete_app``. The directory structure looks like this:
 
-    delete/
-        __init__.py
-        tools.py
+    delete_app/    
+        delete/
+            __init__.py
+            tools.py
 
 Edit ``tools.py`` to look like this:
 
