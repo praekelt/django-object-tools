@@ -89,7 +89,7 @@ class ObjectTools(object):
 
     @property
     def urls(self):
-        return self.get_urls(), self.app_name, self.name
+        return self.get_urls(), self.app_name  # ), self.name
 
 # This global object represents the default object tools, for the common case.
 # You can instantiate ObjectTools in your own code to create a
