@@ -2,15 +2,12 @@ from __future__ import unicode_literals
 
 from django import forms
 from django.conf import settings
-from django.conf.urls import url
+from django.urls import re_path
 from django.contrib.admin import helpers
 from django.core.exceptions import PermissionDenied
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
-try:
-    from django.urls import reverse
-except ImportError:
-    from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 csrf_protect_m = method_decorator(csrf_protect)
 
@@ -102,7 +99,7 @@ class ObjectTool(object):
             self.name,
         )
         urlpatterns = [
-            url(r'^%s/$' % self.name, self._view, name='%s_%s_%s' % info)
+            re_path(r'^%s/$' % self.name, self._view, name='%s_%s_%s' % info)
         ]
         return urlpatterns
     urls = property(_urls)
