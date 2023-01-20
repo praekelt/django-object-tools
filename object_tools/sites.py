@@ -68,7 +68,7 @@ class ObjectTools(object):
         try:
             from django.conf.urls.defaults import url, include
         except ImportError:
-            from django.conf.urls import url, include
+            from django.urls import include, re_path
 
         urlpatterns = []
 
@@ -83,7 +83,7 @@ class ObjectTools(object):
 
             for object_tool in object_tools:
                 urlpatterns.append(
-                    url(r'^%s/%s/' % info, include(object_tool.urls))
+                    re_path(r'^%s/%s/' % info, include(object_tool.urls))
                 )
         return urlpatterns
 
