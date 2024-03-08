@@ -66,40 +66,24 @@ RelatedObjectLookups.js"></script>', '<script type=\
         form = tool.construct_form(MockRequest())
         media = tool.media(form)
 
-        if django.VERSION >= (2, 0):
-            media_js_list = [
-                '<script type="text/javascript" src="/static/admin/js/\
+        media_js_list = [
+            '<script type="text/javascript" src="/static/admin/js/\
 core.js"></script>',
-                '<script type="text/javascript" src="/static/admin/js/\
+            '<script type="text/javascript" src="/static/admin/js/\
 admin/RelatedObjectLookups.js"></script>',
-                '<script type="text/javascript" src="/static/admin/js/\
+            '<script type="text/javascript" src="/static/admin/js/\
 jquery.min.js"></script>',
-                '<script type="text/javascript" src="/static/admin/js/\
+            '<script type="text/javascript" src="/static/admin/js/\
 jquery.init.js"></script>',
-                '<script type="text/javascript" src="/static/admin/js/\
+            '<script type="text/javascript" src="/static/admin/js/\
 vendor/jquery/jquery.min.js"></script>',
-                '<script type="text/javascript" src="/static/admin/js/\
+            '<script type="text/javascript" src="/static/admin/js/\
 jquery.init.js"></script>',
-                '<script type="text/javascript" src="/static/admin/js/\
+            '<script type="text/javascript" src="/static/admin/js/\
 calendar.js"></script>',
-                '<script type="text/javascript" src="/static/admin/js/\
+            '<script type="text/javascript" src="/static/admin/js/\
 admin/DateTimeShortcuts.js"></script>'
-            ]
-        else:
-            media_js_list = [
-                '<script type="text/javascript" src="/static/admin/js/\
-core.js"></script>',
-                '<script type="text/javascript" src="/static/admin/js/\
-admin/RelatedObjectLookups.js"></script>',
-                '<script type="text/javascript" src="/static/admin/js/\
-jquery.min.js"></script>',
-                '<script type="text/javascript" src="/static/admin/js/\
-jquery.init.js"></script>',
-                '<script type="text/javascript" src="/static/admin/js/\
-calendar.js"></script>',
-                '<script type="text/javascript" src="/static/admin/js/\
-admin/DateTimeShortcuts.js"></script>'
-            ]
+        ]
 
         # Media result should also include field specific media.
         self.assertEqual(media.render_js(), media_js_list)
@@ -120,16 +104,10 @@ to how admin does, except pointing to the particular tool.")
         urls = tool.urls
         self.assertEqual(len(urls), 1, 'urls property should only \
                 return 1 url')
-        if django.VERSION >= (2, 0):
-            self.assertEqual(
-                urls[0].__repr__(),
-                "<URLPattern '^test_tool/$' [name='auth_user_test_tool']>"
-            )
-        else:
-            self.assertEqual(
-                urls[0].__repr__(),
-                '<RegexURLPattern auth_user_test_tool ^test_tool/$>'
-            )
+        self.assertEqual(
+            urls[0].__repr__(),
+            "<URLPattern '^test_tool/$' [name='auth_user_test_tool']>"
+        )
         self.assertEqual(
             urls[0].name, 'auth_user_test_tool',
             'URL should be named as "<app_label>_<model_name>_<tool_name>".'

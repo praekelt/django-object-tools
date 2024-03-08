@@ -29,10 +29,6 @@ def old_autodiscover():
 
 
 def autodiscover():
-    if django.VERSION < (1, 7):
-        old_autodiscover()
-    else:
-        from django.utils.module_loading import autodiscover_modules
-        autodiscover_modules('tools', register_to=tools)
+    from django.utils.module_loading import autodiscover_modules
+    autodiscover_modules('tools', register_to=tools)
 
-default_app_config = 'object_tools.apps.ObjectToolsAppConfig'
